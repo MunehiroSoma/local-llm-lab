@@ -20,6 +20,13 @@ repos:
         args: ["--fix"]
       - id: ruff-format
 
+  # 型検査（規約: mypy strict）。実装が増えたら additional_dependencies を追加。
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.1
+    hooks:
+      - id: mypy
+        args: ["--config-file=pyproject.toml"]
+
   - repo: local
     hooks:
       - id: guard-golden-data
