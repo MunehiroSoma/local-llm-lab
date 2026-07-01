@@ -21,6 +21,9 @@ node_modules/
 *.local
 secrets.*
 
+# --- Claude Code local settings (per-developer, not shared) ---
+.claude/settings.local.json
+
 # --- Results: results.csv と reports は追跡、生ログは無視 ---
 results/raw/*
 !results/raw/.gitkeep
