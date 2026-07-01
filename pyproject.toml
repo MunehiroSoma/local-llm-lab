@@ -28,5 +28,58 @@ tools = [
 [tool.uv]
 # uv でロック（uv lock / uv sync）
 
+# ---- コーディング規約の機械化（docs/coding-standards/python.md）----
+# black/isort は ruff に一本化。型検査は mypy strict。
 [tool.ruff]
-line-length = 100
+line-length = 120
+target-version = "py311"
+src = ["src", "harness", "scripts"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",   # pycodestyle（空白/スタイル: 括弧内空白・= 空白・: 空白 等）
+  "F",        # pyflakes（未使用 import/変数）
+  "I",        # isort（import 順: 標準→サードパーティ→内部）
+  "N",        # pep8-naming（snake/Pascal/UPPER）
+  "D",        # pydocstyle（Docstring）
+  "ANN",      # flake8-annotations（型ヒント必須・-> None）
+  "UP",       # pyupgrade（| union 等の現代記法）
+  "B",        # flake8-bugbear
+  "S",        # flake8-bandit（eval/exec 禁止・requests timeout 等）
+  "T20",      # flake8-print（print 禁止）
+  "C90",      # mccabe（複雑度＝ネスト抑制）
+  "PL",       # pylint（PLR2004 マジックナンバー 等）
+  "RET", "SIM", "ARG", "PTH", "TID", "BLE",
+]
+ignore = [
+  "D203", "D213",  # Google スタイルと相互排他な docstring 整形
+  "ANN401",        # Any は許容（規約: noqa で明示運用）
+  "PLR0913",       # 引数数は必要時に個別対応
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"       # Google スタイル Docstring（Sphinx napoleon）
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10         # ネスト3段以内の方針を機械側で担保
+
+[tool.ruff.lint.flake8-annotations]
+suppress-none-returning = false   # 戻り値なしは -> None を明記させる
+mypy-init-return = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "domain", "infrastructure", "utils", "harness"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "S101", "ANN", "PLR2004"]   # テストは docstring/assert 許容
+"scripts/**" = ["D", "T20", "ANN"]             # スクリプトは print 許容
+"__init__.py" = ["D104", "F401"]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+strict = true
