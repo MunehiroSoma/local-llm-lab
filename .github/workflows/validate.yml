@@ -1,0 +1,22 @@
+# ⚠️ 最小・任意のCI（ADR 0004）。一次ゲートはローカルの pre-commit。
+# Public リポジトリなので GitHub-hosted ランナーは無料・無制限。
+# ここでは pre-commit を --no-verify で回避された場合に備え、機密データ混入だけをサーバ側でも防ぐ。
+# 不要なら本ファイルを削除可。GPU評価等でセルフホストする場合のみ runs-on を [self-hosted] に変更し、
+# かつ Settings→Actions で外部PRの承認必須にすること（fork PR の任意コード実行リスク）。
+name: guard
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard-golden-data:
+    runs-on: ubuntu-latest        # セルフホスト時は [self-hosted]（要アクセス制限）
+    steps:
+      - uses: actions/checkout@v4
+      - name: private golden data must not be committed
+        run: bash scripts/guard_golden.sh

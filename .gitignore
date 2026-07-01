@@ -1,0 +1,40 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.uv/
+.ruff_cache/
+.pytest_cache/
+
+# --- Node (promptfoo など) ---
+node_modules/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
+
+# --- Secrets / local ---
+.env
+.env.*
+*.local
+secrets.*
+
+# --- Results: results.csv と reports は追跡、生ログは無視 ---
+results/raw/*
+!results/raw/.gitkeep
+
+# --- Private golden datasets（PUBLIC repo なので厳重に）---
+# 実データ（自前の仕様書等）は絶対にコミットしない。samples/ のみ公開。
+datasets/golden/**
+!datasets/golden/.gitignore
+!datasets/golden/samples/
+!datasets/golden/samples/**
+
+# --- モデル重み・大容量成果物 ---
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.onnx

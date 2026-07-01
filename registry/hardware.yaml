@@ -1,0 +1,52 @@
+# ハードウェア・プロファイル — 「マシン追加 = ここに1行」。research §2, §13.5 参照。
+# 帯域は概算（要実測）。単発tok/s ≈ 活性params ÷ 帯域 の目安に使う。
+schema_version: 1
+
+machines:
+  - id: mac
+    name: MacBook Pro M4 Pro
+    os: macOS
+    cpu: Apple M4 Pro (10P+4E / 14core)
+    ram_gb: 48                 # unified
+    accelerator: Apple M4 Pro GPU (Metal) + ANE
+    vram_gb: 48                # unified
+    mem_bandwidth_gbs: 273     # approx — 要確認
+    compute: metal
+    runtimes: [mlx-vlm, ollama, llama.cpp]
+    role: "画像+テキスト+音声入力の常時手元機。フルomniは対象外。"
+
+  - id: rtx-5060ti
+    name: RTX 5060 Ti box
+    os: Windows 11 + WSL2 (Ubuntu)
+    cpu: Intel Core i7-14700
+    ram_gb: 32
+    accelerator: NVIDIA RTX 5060 Ti (Blackwell)
+    vram_gb: 16                # GDDR7
+    mem_bandwidth_gbs: 448
+    compute: sm_120
+    runtimes: [vllm, vllm-omni, ollama, llama.cpp]
+    role: "載せやすいNVIDIA機。ローカルomni(9B)副ホスト。"
+
+  - id: rtx-5070
+    name: RTX 5070 box
+    os: Windows 11 + WSL2 (Ubuntu)
+    cpu: Intel Core i9-14900K
+    ram_gb: 64
+    accelerator: NVIDIA RTX 5070 (Blackwell)
+    vram_gb: 12                # GDDR7
+    mem_bandwidth_gbs: 672
+    compute: sm_120
+    runtimes: [vllm, ollama, llama.cpp]
+    role: "VLM/コーディングの単発最速機。omniは窮屈。"
+
+  - id: dgx-spark
+    name: NVIDIA DGX Spark
+    os: DGX OS (ARM64)
+    cpu: GB10 Arm 20core (10x X925 + 10x A725)
+    ram_gb: 128                # unified LPDDR5X
+    accelerator: GB10 Grace Blackwell
+    vram_gb: 128               # unified
+    mem_bandwidth_gbs: 273
+    compute: sm_121
+    runtimes: [vllm, vllm-omni]   # 要CUDA13/NGC
+    role: "大型・フルomniの主軸ホスト。単発最速は狙わない。"

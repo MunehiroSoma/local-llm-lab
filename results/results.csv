@@ -1,0 +1,2 @@
+model,revision,runtime,env,profile,quantization,fit,max_model_len,tok_s,ttft_ms,mm_preprocess_ms,std_bench,task_score,tok_per_j,date,notes
+# 例: 1行=1(モデル×環境×条件)。fit=yes/no/oom。std_bench/task_scoreは用途スコア。research §12.10 参照。

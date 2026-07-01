@@ -1,0 +1,38 @@
+# 自前タスク評価（要約・タグ付け）の雛形。
+# 実行: npx promptfoo@latest eval -c harness/task/promptfoo/promptfooconfig.example.yaml
+# モデル差し替え = provider の apiBaseUrl を変えるだけ（ADR 0002）。
+description: "summarize/tag eval — JSONスキーマ + LLM-rubric（日本語）"
+
+providers:
+  # 被評価モデル（OpenAI互換）。Ollama例。vLLMなら http://127.0.0.1:8000/v1
+  - id: openai:chat:bench-model
+    config:
+      apiBaseUrl: http://127.0.0.1:11434/v1
+      apiKey: dummy
+
+prompts:
+  - |
+    次の文章を日本語で3行に要約し、内容を表すタグを付けてJSONのみで返してください。
+    スキーマ: {"summary": string, "tags": string[]}
+    文章:
+    {{input}}
+
+tests:
+  # 実データは datasets/golden/ から生成（ここは samples を1件だけ例示）
+  - vars:
+      input: "（datasets/golden/samples/ のテキストを差し込む）"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "const o=JSON.parse(output); o.tags.length>=1 && typeof o.summary==='string'"
+      - type: llm-rubric
+        value: "要約は原文に忠実で日本語として自然。タグは内容を的確に表す。"
+
+# judge は固定（強いモデル）。過去比較の連続性のため変えない。
+defaultTest:
+  options:
+    provider:
+      id: openai:chat:judge-model
+      config:
+        apiBaseUrl: http://127.0.0.1:11434/v1
+        apiKey: dummy

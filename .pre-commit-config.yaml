@@ -1,0 +1,36 @@
+# ローカルの一次ゲート（ADR 0004: CIではなく pre-commit を主とする）。
+# 導入: pre-commit install   /   全体実行: pre-commit run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.6
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: guard-golden-data
+        name: guard golden data (公開リポに実評価データを入れない)
+        entry: scripts/guard_golden.sh
+        language: script
+        pass_filenames: false
+        always_run: true
+      - id: validate-registry
+        name: validate registry YAML
+        entry: python -c "import yaml,sys;[yaml.safe_load(open(f)) for f in sys.argv[1:]]"
+        language: python
+        additional_dependencies: ["pyyaml"]
+        files: ^registry/.*\.ya?ml$

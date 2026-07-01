@@ -1,0 +1,6 @@
+# PUBLIC repo — 実データ（自前仕様書等）は絶対にコミットしない。
+# このディレクトリは samples/ と本ファイル以外すべて無視する。
+*
+!.gitignore
+!samples/
+!samples/**

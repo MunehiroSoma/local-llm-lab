@@ -1,0 +1,149 @@
+# モデルレジストリ — 「モデル追加 = ここに1行」。詳細は docs/adr/0002, research §13.5。
+# ここは"候補宣言"。最終選定は harness/ の PoC 実測で決める（このファイルは真実ではなく計画）。
+schema_version: 1
+
+# profile = 用途タグ。target_envs = 載る想定の環境（実確認は fit テスト）。
+profiles: [coding, concierge, summarize, vlm, omni]
+
+models:
+  # ---- コンシェルジュ / 汎用（日常の本命）----
+  - id: gemma4-12b
+    hf_repo: google/gemma-4-12b-it
+    revision: null            # ← オンボーディング時にコミットハッシュで固定
+    modality: [text, image, audio]
+    params: 12B
+    quantization: [bf16, fp8, q4_k_m]
+    runtimes: [vllm, ollama, mlx-vlm]
+    max_model_len: 128000
+    profiles: [concierge, vlm, summarize]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "日常/コンシェルジュ本命。音声入力可。整った日本語。"
+
+  - id: gemma4-26b-a4b
+    hf_repo: google/gemma-4-26b-a4b-it
+    revision: null
+    modality: [text, image, audio]
+    params: 26B
+    active_params: 4B         # MoE
+    quantization: [fp8, q4_k_m]
+    runtimes: [vllm, ollama, mlx-vlm]
+    max_model_len: 128000
+    profiles: [concierge, vlm]
+    target_envs: [mac, rtx-5060ti, dgx-spark]
+    notes: "MoE(活性4B)。帯域低いMac/DGXで有利。'26B-A4Bは神'評。"
+
+  # ---- コーディング / エージェント ----
+  - id: qwen3.6-35b-a3b
+    hf_repo: Qwen/Qwen3.6-35B-A3B-Instruct   # ← 正式repo名は要確認
+    revision: null
+    modality: [text]
+    params: 35B
+    active_params: 3B
+    quantization: [fp8, q4_k_m]
+    runtimes: [vllm, ollama, mlx]
+    max_model_len: 262144
+    profiles: [coding, concierge]
+    target_envs: [mac, dgx-spark]      # ~19GB→RTX12/16は窮屈
+    notes: "コミュニティ'コーディング王'。'Claude Code代替'。"
+
+  - id: qwen3-coder-30b-a3b
+    hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
+    revision: null
+    modality: [text]
+    params: 30B
+    active_params: 3.3B
+    quantization: [q4_k_m, fp8]
+    runtimes: [ollama, vllm, mlx]
+    max_model_len: 262144
+    profiles: [coding]
+    target_envs: [mac, dgx-spark]
+    notes: "Ollamaコーディング上位。~19GB。"
+
+  - id: qwen3-coder-next-80b-a3b
+    hf_repo: Qwen/Qwen3-Coder-Next-80B-A3B
+    revision: null
+    modality: [text]
+    params: 80B
+    active_params: 3B
+    quantization: [fp8, nvfp4]
+    runtimes: [vllm]
+    max_model_len: 262144
+    profiles: [coding]
+    target_envs: [dgx-spark]           # 大型→DGXのみ
+    notes: "SWE-bench ~70.6%。DGX 128GB×活性3Bの理想形。"
+
+  - id: qwen2.5-coder-14b
+    hf_repo: Qwen/Qwen2.5-Coder-14B-Instruct
+    revision: null
+    modality: [text]
+    params: 14B
+    quantization: [q4_k_m, fp8, bf16]
+    runtimes: [vllm, ollama, mlx, llama.cpp]
+    max_model_len: 131072
+    profiles: [coding]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "12GBにも収まる無難な主力。"
+
+  - id: devstral-small-2
+    hf_repo: mistralai/Devstral-Small-2   # ← 正式repo名は要確認
+    revision: null
+    modality: [text]
+    params: 24B
+    quantization: [q4_k_m, fp8]
+    runtimes: [vllm, ollama, mlx]
+    max_model_len: 131072
+    profiles: [coding]
+    target_envs: [rtx-5060ti, mac, dgx-spark]
+    notes: "Mistralのエージェント特化。SWE-bench ~68%。16GBの上限級。"
+
+  # ---- VLM（視覚）----
+  - id: qwen2.5-vl-7b
+    hf_repo: Qwen/Qwen2.5-VL-7B-Instruct
+    revision: null
+    modality: [text, image, video]
+    params: 7B
+    quantization: [fp8, bf16, q4_k_m]
+    runtimes: [vllm, mlx-vlm]
+    max_model_len: 128000
+    profiles: [vlm, summarize]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "文書/複数画像/動画。定番・軽量。"
+
+  # ---- omni（音声+動画+音声出力）----
+  - id: minicpm-o-4.5
+    hf_repo: openbmb/MiniCPM-o-4_5        # ← 正式repo名は要確認
+    revision: null
+    modality: [text, image, audio, video]
+    params: 9B
+    quantization: [fp8, q4_k_m]
+    runtimes: [vllm-omni]
+    max_model_len: 32768
+    profiles: [omni, vlm, concierge]
+    target_envs: [rtx-5060ti, dgx-spark]
+    notes: "エッジ最適omni。16GBに収まる。ローカルomni本命。"
+
+  - id: qwen3-omni-30b-a3b
+    hf_repo: Qwen/Qwen3-Omni-30B-A3B-Instruct
+    revision: null
+    modality: [text, image, audio, video]
+    params: 30B
+    active_params: 3B
+    quantization: [fp8, nvfp4]
+    runtimes: [vllm-omni]
+    max_model_len: 65536
+    profiles: [omni]
+    target_envs: [dgx-spark]
+    notes: "40分超音声/119言語/音声生成。大型omniはDGX。"
+
+  # ---- 要約・タグ付け（構造化出力：3B級は避け7B/8B+）----
+  - id: qwen3-8b
+    hf_repo: Qwen/Qwen3-8B
+    revision: null
+    modality: [text]
+    params: 8B
+    quantization: [q4_k_m, fp8, bf16]
+    runtimes: [vllm, ollama, mlx, llama.cpp]
+    max_model_len: 131072
+    profiles: [summarize, coding]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "多言語/日本語/構造化。JSONは7B+推奨。"

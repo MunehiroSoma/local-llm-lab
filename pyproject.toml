@@ -1,0 +1,32 @@
+[project]
+name = "local-llm-lab"
+version = "0.1.0"
+description = "Local LLM / multimodal(omni) framework selection, model comparison, PoC and continuous evaluation across a personal hardware fleet."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pyyaml>=6",
+]
+
+# 実装フェーズで有効化する任意グループ（uv pip install -e ".[bench,eval]"）
+[project.optional-dependencies]
+bench = [
+    # "vllm",                # NVIDIA環境のみ（envs/ で管理）
+    # "genai-perf",
+    # "llmperf",
+]
+eval = [
+    "promptfoo; platform_system!='no'",   # 実体はnpx/npmでも可
+    "deepeval",
+    "ragas",
+]
+tools = [
+    "whichllm",             # モデル自動推薦（uvx whichllm@latest でも可）
+]
+
+[tool.uv]
+# uv でロック（uv lock / uv sync）
+
+[tool.ruff]
+line-length = 100
