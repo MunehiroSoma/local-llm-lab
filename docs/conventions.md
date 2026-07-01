@@ -41,6 +41,16 @@
 - **ドキュメント先行**: 決定は ADR、根拠は `research/`、結果は `results/` に残す。
 - **ハット(役割)**: ai-dev-kit スキル ＋ fit / speed / eval / review。
 
+## ドキュメント体系
+
+| 種別 | 場所 | 用途 |
+|---|---|---|
+| 要件定義書（本ラボ） | [`docs/specs/01_要件定義書.md`](specs/01_要件定義書.md) | local-llm-lab プロジェクトの要件定義（記入済み） |
+| 設計書テンプレート | [`docs/templates/`](templates/) | 汎用テンプレート一式（01_要件定義書〜06_機能要件定義書） |
+| ヒアリングシート | [`docs/templates/ヒアリングシート.md`](templates/ヒアリングシート.md) | 要件定義フェーズ用ヒアリング項目 131 問（C01〜C11） |
+| コードレビューチェックリスト | [`docs/coding-standards/review-checklist.md`](coding-standards/review-checklist.md) | PR レビュー時の確認リスト（共通 + Python） |
+| Python コーディング規約 | [`docs/coding-standards/python.md`](coding-standards/python.md) | v1.2 規約本文 + ruff マッピング表 |
+
 ## ai-dev-kit スキルのプレースホルダ（本リポジトリの値）
 | placeholder | 値 |
 |---|---|
