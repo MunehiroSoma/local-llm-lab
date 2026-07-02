@@ -1,0 +1,16 @@
+name: concierge-ja-v1
+judge_model: fixed-judge-model
+scale: 0.0-1.0
+criteria:
+  - id: correctness
+    weight: 0.4
+    description: "回答が入力事実に基づいて正しい"
+  - id: usefulness
+    weight: 0.3
+    description: "ユーザーが次の行動を取れる程度に具体的"
+  - id: japanese_quality
+    weight: 0.2
+    description: "日本語として自然で読みやすい"
+  - id: hallucination_control
+    weight: 0.1
+    description: "根拠のない断定や捏造がない"
