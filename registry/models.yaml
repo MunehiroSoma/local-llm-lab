@@ -161,8 +161,8 @@ models:
 
   - id: llm-jp-4-8b-instruct
     status: candidate
-    hf_repo: llm-jp/llm-jp-4-8b-instruct
-    revision: null
+    hf_repo: mmnga-o/llm-jp-4-8b-instruct-gguf
+    revision: 7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1
     modality: [text]
     params: 8.6B
     quantization: [bf16, q4_k_m]
@@ -170,7 +170,7 @@ models:
     max_model_len: 65536
     profiles: [summarize, concierge, coding]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
-    notes: "LLM-jp/NIIの日本製8B instruct。日本語baseline。q4_k_mはコミュニティGGUF経路。"
+    notes: "LLM-jp/NIIの日本製8B instruct。Mac/Ollama実測はコミュニティGGUF Q4_K_M。base repo HEAD: 098f2b2cf33021eba19a6d3582aa3d071ccc0aff。"
 
   - id: qwen3-8b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）

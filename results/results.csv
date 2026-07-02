@@ -1,2 +1,3 @@
 model,revision,runtime,env,profile,quantization,fit,max_model_len,tok_s,ttft_ms,mm_preprocess_ms,std_bench,task_score,tok_per_j,date,notes
 # 例: 1行=1(モデル×環境×条件)。fit=yes/no/oom。std_bench/task_scoreは用途スコア。research §12.10 参照。
+llm-jp-4-8b-instruct,7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1,ollama,mac,summarize,q4_k_m,yes,65536,48.7303,185.477,,1,1,,2026-07-02,hold; stop=<|end|>; bench=llm-jp-eval-smoke-ja-qa-public-v1; task=summary-tags-schema-public-v1; ollama_id=d5bf362b9fd8
