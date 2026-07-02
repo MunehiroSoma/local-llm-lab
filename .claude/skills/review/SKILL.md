@@ -38,9 +38,11 @@ Launch one Explore-type subagent per viewpoint category in `docs/coding-standard
 | Test | `docs/coding-standards/review-checklist/04-test.md` | Diff only | Lightweight to mid-tier |
 | Design consistency | `docs/coding-standards/review-checklist/05-design-consistency.md` | Diff + ADRs / research notes | Higher-tier |
 | harness-eval-registry | `docs/coding-standards/review-checklist/06-harness-eval-registry.md` | Diff only (ADRs too if `registry` changes) | Higher-tier |
+| Web security (conditional) | `docs/coding-standards/review-checklist/07-web-security.md` | Diff only | Higher-tier |
 
 - **Right model for the job**: use a lightweight model for mechanical, convention/format checks (naming, import ordering, forbidden-pattern detection); use a higher-tier model for viewpoints requiring design judgment, harness logic, or architectural consistency.
 - **Scale the launch to the change size**: for small diffs (rule of thumb: fewer than 5 files), launch only the main viewpoints (basic quality, error handling, test); for model-onboarding or large harness changes, launch all viewpoints.
+- **Conditional viewpoints**: launch Web security only when the diff touches Streamlit/Gradio or other Web/GUI code (ADR 0007 Phase B onward). Do not launch it for non-GUI diffs.
 
 ## Noise-suppression rules for viewpoint-scoped subagents (mandatory)
 
