@@ -38,6 +38,8 @@ example: /ship feat: implement DB schema and migration
    - If there are changes unrelated to the target issue, do not push/PR as-is
    - If dirty, isolate in a temporary worktree or evacuate via `git stash`
    - Do not discard changes (e.g. `git restore`) without user confirmation
+   - Before committing, confirm the current branch follows `docs/conventions.md`
+   - Do not ship from tool-origin branches such as `codex/*` or `claude/*`; rename or recreate the branch with the correct work-type prefix first
 
 1. Check the changed files and verification
    ```bash

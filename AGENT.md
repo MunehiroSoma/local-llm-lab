@@ -25,6 +25,8 @@ Core: **docs-first, phase gates, human approval, short BOLTs, hats (roles)**.
 ### BOLT / Unit of Work
 - 1 BOLT = a short-lived branch (`exp/*` `model/<id>` `feat/*`) lasting hours to a day.
 - Unit of Work = "one (model × environment × eval)" or "one harness feature."
+- Branch names must follow `docs/conventions.md` by work type. Do not use tool-origin prefixes
+  such as `codex/*` or `claude/*`; Codex/Claude work still uses `feat/*`, `fix/*`, `chore/*`, etc.
 
 ### Hats (roles) = skills / subagents
 19 skills live under `.agents/skills/` as the canonical Codex-compatible copy.

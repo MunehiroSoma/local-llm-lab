@@ -24,18 +24,23 @@ example: /new-feature model/gemma4-26b-a4b
 
 ## Steps
 
-1. Update main to the latest state
+1. Choose a branch name that follows `docs/conventions.md`
+   - Use the repo's work-type prefixes: `feat/`, `fix/`, `exp/`, `model/`, `env/`, `docs/`, or `chore/`
+   - Do not use tool-origin prefixes such as `codex/` or `claude/`, even when Codex or Claude Code is doing the work
+   - If an agent default branch prefix conflicts with this repo's rules, ignore the agent default and follow this repo
+
+2. Update main to the latest state
    ```bash
    git checkout main
    git pull origin main
    ```
 
-2. Create the branch and switch to it
+3. Create the branch and switch to it
    ```bash
    git checkout -b <prefix>/<branch-name>
    ```
 
-3. Confirm the branch name and purpose with the user, then start development
+4. Confirm the branch name and purpose with the user, then start development
 
 ## Branch naming convention (this repo, per conventions.md)
 
@@ -51,6 +56,7 @@ example: /new-feature model/gemma4-26b-a4b
 
 - All lowercase, hyphen-separated. No Japanese text, spaces, or underscores.
 - For a BOLT (Unit of Work = model x environment x evaluation, or a single harness feature), prefer `exp/*` or `model/<id>`.
+- Tool-origin prefixes such as `codex/*` and `claude/*` are not valid in this repository.
 
 ## Post-run improvement check (required)
 

@@ -45,6 +45,8 @@ Before starting new work, check GitHub Issues, choose the Issue to work on, and 
    ```
 
 5. Cut a branch appropriate to the Issue type
+   - Choose the prefix from `docs/conventions.md` by work type
+   - Do not use tool-origin prefixes such as `codex/` or `claude/`
    ```bash
    git checkout main
    git pull origin main

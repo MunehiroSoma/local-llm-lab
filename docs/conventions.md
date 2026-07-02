@@ -11,6 +11,9 @@
 | `docs/*` | 資料 |
 | `chore/*` | 雑務・設定 |
 
+Codex / Claude Code などの実行環境に関係なく、ブランチ名は必ず上記 prefix から選ぶ。
+`codex/*` や `claude/*` など、ツール名を prefix にしたブランチは禁止。
+
 `main` は保護（直push禁止・PR必須・pre-commit通過）。マージは **squash**。
 
 ## コミット（Conventional Commits）
