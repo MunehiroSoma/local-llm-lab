@@ -82,6 +82,12 @@ example: /long-run Proceed with #21 performance verification through to completi
 - Keep changes to a minimal diff; do not mix in unnecessary refactoring
 - Prioritize related tests, expanding scope as needed
 
+## Long-running command output
+
+- For commands with high-volume progress output, such as `ollama pull`, `docker pull`, model downloads, package installs, or benchmark progress bars, keep tool output bounded and summarize progress in user updates instead of exposing full logs.
+- Prefer a command's quiet or structured output mode when it preserves the final success/failure signal. If the command must run with progress output, use low output budgets while polling and capture only the final status, key metrics, and actionable errors.
+- Do not store noisy progress logs in repo docs, Issue comments, or PR descriptions. Record reproducible commands, final model/runtime identifiers, measurement results, and any failure diagnostics needed to rerun or debug.
+
 ## Notifications (optional)
 
 - For long-running tasks, notifying start/interim/blocked/done to Discord etc. makes tracking easier
