@@ -1,6 +1,6 @@
 # コーディング規約: JavaScript / TypeScript
 
-- Version: 0.1 / 作成: 2026-03-25 / 最終更新: 2026-03-25
+- Version: 0.1 / 作成: 2026-03-25 / 最終更新: 2026-07-02（local-llm-lab導入・ADR 0007対応の節を追加）
 - 作成者・最終更新者: 宗廣 颯真
 - 対象: JavaScript / TypeScript による開発全般（Vue / React / Node.js）
 - 関連: ADR 0007（Phase B は React + TypeScript を主軸に採用） / [`web-gui.md`](web-gui.md)

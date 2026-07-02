@@ -68,6 +68,8 @@ Core: **docs-first, phase gates, human approval, short BOLTs, hats (roles)**.
 | Generic templates | [`docs/templates/`](docs/templates/) (01_requirements–06_functional-requirements, hearing sheets) |
 | Code review checklist | [`docs/coding-standards/review-checklist.md`](docs/coding-standards/review-checklist.md) |
 | Python coding standard | [`docs/coding-standards/python.md`](docs/coding-standards/python.md) |
+| Web/GUI coding standard | [`docs/coding-standards/web-gui.md`](docs/coding-standards/web-gui.md) |
+| JavaScript/TypeScript coding standard | [`docs/coding-standards/javascript-typescript.md`](docs/coding-standards/javascript-typescript.md) |
 
 At PR review time, consult `review-checklist.md` and approve once all Musts are ✓ and CI is green.
 
