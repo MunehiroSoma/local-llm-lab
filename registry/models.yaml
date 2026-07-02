@@ -8,6 +8,7 @@ profiles: [coding, concierge, summarize, vlm, omni]
 models:
   # ---- コンシェルジュ / 汎用（日常の本命）----
   - id: gemma4-12b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: google/gemma-4-12b-it
     revision: null            # ← オンボーディング時にコミットハッシュで固定
     modality: [text, image, audio]
@@ -20,6 +21,7 @@ models:
     notes: "日常/コンシェルジュ本命。音声入力可。整った日本語。"
 
   - id: gemma4-26b-a4b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: google/gemma-4-26b-a4b-it
     revision: null
     modality: [text, image, audio]
@@ -34,6 +36,7 @@ models:
 
   # ---- コーディング / エージェント ----
   - id: qwen3.6-35b-a3b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3.6-35B-A3B-Instruct   # ← 正式repo名は要確認
     revision: null
     modality: [text]
@@ -47,6 +50,7 @@ models:
     notes: "コミュニティ'コーディング王'。'Claude Code代替'。"
 
   - id: qwen3-coder-30b-a3b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
     revision: null
     modality: [text]
@@ -60,6 +64,7 @@ models:
     notes: "Ollamaコーディング上位。~19GB。"
 
   - id: qwen3-coder-next-80b-a3b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-Coder-Next-80B-A3B
     revision: null
     modality: [text]
@@ -73,6 +78,7 @@ models:
     notes: "SWE-bench ~70.6%。DGX 128GB×活性3Bの理想形。"
 
   - id: qwen2.5-coder-14b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen2.5-Coder-14B-Instruct
     revision: null
     modality: [text]
@@ -85,6 +91,7 @@ models:
     notes: "12GBにも収まる無難な主力。"
 
   - id: devstral-small-2
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: mistralai/Devstral-Small-2   # ← 正式repo名は要確認
     revision: null
     modality: [text]
@@ -98,6 +105,7 @@ models:
 
   # ---- VLM（視覚）----
   - id: qwen2.5-vl-7b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen2.5-VL-7B-Instruct
     revision: null
     modality: [text, image, video]
@@ -111,6 +119,7 @@ models:
 
   # ---- omni（音声+動画+音声出力）----
   - id: minicpm-o-4.5
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: openbmb/MiniCPM-o-4_5        # ← 正式repo名は要確認
     revision: null
     modality: [text, image, audio, video]
@@ -123,6 +132,7 @@ models:
     notes: "エッジ最適omni。16GBに収まる。ローカルomni本命。"
 
   - id: qwen3-omni-30b-a3b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-Omni-30B-A3B-Instruct
     revision: null
     modality: [text, image, audio, video]
@@ -137,6 +147,7 @@ models:
 
   # ---- 要約・タグ付け（構造化出力：3B級は避け7B/8B+）----
   - id: qwen3-8b
+    status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-8B
     revision: null
     modality: [text]

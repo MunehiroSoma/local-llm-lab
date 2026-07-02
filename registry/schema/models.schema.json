@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "registry/models.yaml のスキーマ。enum(target_envs/profiles)はregistry/hardware.yamlとmodels.yaml先頭のprofiles宣言の手動ミラー。両ファイル変更時はここも更新すること（Issue #45）。",
+  "title": "local-llm-lab models.yaml",
+  "type": "object",
+  "required": ["schema_version", "profiles", "models"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/model" }
+    }
+  },
+  "definitions": {
+    "model": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "hf_repo",
+        "revision",
+        "modality",
+        "params",
+        "quantization",
+        "runtimes",
+        "max_model_len",
+        "profiles",
+        "target_envs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.\\-][a-z0-9]+)*$" },
+        "status": { "type": "string", "enum": ["candidate", "onboarded"] },
+        "hf_repo": { "type": "string", "minLength": 1 },
+        "revision": { "type": ["string", "null"] },
+        "modality": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["text", "image", "audio", "video"] }
+        },
+        "params": { "type": "string" },
+        "active_params": { "type": "string" },
+        "quantization": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "runtimes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "max_model_len": { "type": "integer", "minimum": 1 },
+        "profiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["coding", "concierge", "summarize", "vlm", "omni"]
+          }
+        },
+        "target_envs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["mac", "rtx-5060ti", "rtx-5070", "dgx-spark"]
+          }
+        },
+        "notes": { "type": "string" }
+      },
+      "if": {
+        "properties": { "status": { "const": "onboarded" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "revision": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

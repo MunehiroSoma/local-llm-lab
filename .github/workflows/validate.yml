@@ -13,10 +13,22 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: guard-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   guard-golden-data:
     runs-on: ubuntu-latest        # セルフホスト時は [self-hosted]（要アクセス制限）
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0           # results guard で origin/main と比較するため全履歴を取得
       - name: private golden data must not be committed
         run: bash scripts/guard_golden.sh
+      - name: results.csv must be append-only (鉄則4)
+        env:
+          GUARD_RESULTS_BASE_REF: origin/main
+          GUARD_RESULTS_SOURCE: worktree
+        run: bash scripts/guard_results_append_only.sh
