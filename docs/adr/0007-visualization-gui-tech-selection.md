@@ -26,19 +26,27 @@ Issue #35（Phase A の実装）を着手可能にする。
   後から pdf 用に図を作り直す手戻り（research §6-3）を避ける。
 - pdf 変換経路は Typst 経由（LaTeX 不要）を既定とする。
 
-### Phase B: Web ダッシュボード（GUI操作）— Streamlit 主 / Gradio 併用
-- ダッシュボード用途（results確認・比較チャート・実行指示UI）は **Streamlit** を第一候補とする。
-- モデルとの対話UI（チャット等）が必要になった時点で **Gradio** を併用する。
-- 両方 Python 一枚岩で完結させ、既存の ruff/mypy 規約をそのまま適用する。
-- JS フロントエンド（React等）は「Python系で表現できないUI要求」が具体的に出るまで採用しない
-  （規約・CI・レビュー観点が丸ごと一式増えるため）。
+### Phase B: Web ダッシュボード（GUI操作）— React + TypeScript を主軸、API バックエンドは FastAPI
+- **2026-07-02 改訂**: 当初案（Streamlit 主 / Gradio 併用）は撤回する。Streamlit はスクリプト全再実行
+  モデルゆえレイアウト・状態管理・コンポーネント再利用の自由度が低く、GUI操作・グラフ確認・
+  複数出力形式という要件に対して**表現力の限界に早期に到達する**ため、本ラボでは主軸としない。
+- **フロントエンド**: React + TypeScript を主軸とする。ビルドツールは Vite、パッケージ管理は npm
+  （Node.js 同梱でセットアップコストが最小のため。ワークスペースが増えたら pnpm 移行を検討）。
+- **バックエンド**: 新規に Node.js サーバは立てず、**FastAPI**（Python）で `harness/` を薄くラップした
+  API を提供する。本ラボは既に Python 一枚岩（harness/ scripts/ registry/）のため、
+  ロジック層を二重管理しない。React はこの API を叩くクライアントに徹する。
+- コーディング規約は新設の [`javascript-typescript.md`](../coding-standards/javascript-typescript.md)
+  （React 向け補足含む）に従う。ESLint/Prettier/Vitest の pre-commit・CI 組み込みは
+  実装 Issue（Phase B 着手時）で行う（本ADRは方針決定のみ）。
+- Streamlit/Gradio は「メインのダッシュボード」としては採用しないが、使い捨ての調査用スクリプト
+  （1回限りの手元確認・デモ）に限り個人利用は妨げない。ただしそれらはレビュー対象の成果物には含めない。
 
 ### Phase C: スタンドアロンアプリ — 見送り
 - Tauri / Electron は採用しない。ビルド・署名・更新配布の運用コストが単独ラボの
   費用対効果に見合わない。
-- Streamlit をローカル起動し `localhost` をブラウザで開く運用が実質的にスタンドアロンとして
-  機能するため、Phase B で代替できる。判断は先送りではなく **不採用として確定**する
-  （必要性が具体的に生じた場合のみ本ADRを再訪する）。
+- React（Vite ビルド）+ FastAPI をローカル起動し `localhost` をブラウザで開く運用が実質的に
+  スタンドアロンとして機能するため、Phase B で代替できる。判断は先送りではなく
+  **不採用として確定**する（必要性が具体的に生じた場合のみ本ADRを再訪する）。
 
 ### レポート生成ツールの版固定規約
 - judge モデル・ゴールデンセット版の固定方針（`docs/conventions.md`）と同じ思想を
@@ -73,13 +81,20 @@ Issue #35（Phase A の実装）を着手可能にする。
 - Jinja2 + Plotly（自前）: 却下。Quarto が同等以上の要件（多形式出力・pdf変換）を
   既製品として満たすため、自前実装の保守コストを避ける。
 - Dash: 過剰（研究ノート比較表参照）。単独開発・Python一枚岩の要件に対してオーバースペック。
-- marimo: 情報が少なく様子見。Phase B 開始時点で Streamlit が要件を満たせない場合の代替候補として
-  記録のみ残す。
+- Streamlit / Gradio / marimo（Phase B 主軸としては却下）: スクリプト全再実行モデルに起因する
+  表現力・状態管理の限界に早期到達するため、GUIダッシュボード用途では不採用。
+  Phase A の静的レポート、または個人の使い捨て調査スクリプトには引き続き使用してよい。
+- Vue（React の代替として不採用）: 参照した JS/TS 規約は Vue/React 両対応だが、
+  初期実装はスタックを一本化するため React を優先する。将来的にチームが増える等の事情で
+  再検討の余地は残す。
 - Tauri/Electron: 上記「Phase C」参照。
 
 ## 影響
 - `pyproject.toml` に `viz` optional-dependencies グループを追加する際は本ADRの技術選定に従う
-  （`plotly` / `kaleido` / `streamlit`。追加時は CI/CDレビュー資料 C-1・C-5 の確認が先）。
+  （Phase A 用途: `plotly` / `kaleido`。追加時は CI/CDレビュー資料 C-1・C-5 の確認が先）。
 - `results/reports/` の生成物にデータ版・コミットSHAを刻印するルールが今後の実装で必須になる。
-- Issue #41（Web/GUI向け規約）は本ADRの Phase B 決定（Streamlit/Gradio採用）を前提に規約を書く。
-- Issue #35 は本ADRの Phase A 決定（Quarto・二層pdf方針）に沿って実装する。
+- Issue #41（Web/GUI向け規約）は本ADRの Phase B 決定（React + TypeScript / FastAPI）を
+  前提に規約を書く。フロントエンドは新規ディレクトリ（例: `web/`）に `package.json` を持ち、
+  ESLint/Prettier/Vitest の設定・pre-commit/CI 組み込みは Phase B 実装 Issue で行う。
+- Issue #35 は本ADRの Phase A 決定（Quarto・二層pdf方針）に沿って実装する（Phase A は
+  GUIを持たないため本改訂の影響を受けない）。
