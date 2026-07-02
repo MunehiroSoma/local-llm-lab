@@ -72,3 +72,15 @@ repos:
         language: script
         pass_filenames: false
         always_run: true
+      - id: guard-branch-name
+        name: guard branch naming convention
+        entry: python3 scripts/guard_branch_name.py
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: guard-agent-skills-sync
+        name: guard .agents/.claude skills copy-sync
+        entry: python3 scripts/sync_agent_skills.py --check
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -11,6 +11,9 @@
 | `docs/*` | 資料 |
 | `chore/*` | 雑務・設定 |
 
+Codex / Claude Code などの実行環境に関係なく、ブランチ名は必ず上記 prefix から選ぶ。
+`codex/*` や `claude/*` など、ツール名を prefix にしたブランチは禁止。
+
 `main` は保護（直push禁止・PR必須・pre-commit通過）。マージは **squash**。
 
 ## コミット（Conventional Commits）
@@ -26,6 +29,12 @@
 
 ## ADR
 重要決定は `docs/adr/NNNN-*.md`（連番）。テンプレは `0000-template.md`。
+
+## Skills
+- 正規のスキル配置は `.agents/skills/` とする。Codex はこの場所を repo-scoped skills として検出する。
+- `.claude/skills/` は Claude Code 互換のコピーとして維持する。直接編集せず、`.agents/skills/` を編集してから
+  `make sync-skills` でコピー同期する。
+- PR前に `make check-skills` または `pre-commit run --all-files` で、両ディレクトリが一致していることを確認する。
 
 ## バージョン / タグ
 - ハーネスは semver（`v0.1.0`）。

@@ -25,9 +25,14 @@ Core: **docs-first, phase gates, human approval, short BOLTs, hats (roles)**.
 ### BOLT / Unit of Work
 - 1 BOLT = a short-lived branch (`exp/*` `model/<id>` `feat/*`) lasting hours to a day.
 - Unit of Work = "one (model × environment × eval)" or "one harness feature."
+- Branch names must follow `docs/conventions.md` by work type. Do not use tool-origin prefixes
+  such as `codex/*` or `claude/*`; Codex/Claude work still uses `feat/*`, `fix/*`, `chore/*`, etc.
 
 ### Hats (roles) = skills / subagents
-19 skills live under `.claude/skills/`, grouped into three categories:
+19 skills live under `.agents/skills/` as the canonical Codex-compatible copy.
+`.claude/skills/` is a copy kept in sync for Claude Code compatibility.
+After editing skills, run `make sync-skills` and verify with `make check-skills`.
+They are grouped into three categories:
 
 | Category | Skills |
 |---|---|
@@ -57,6 +62,7 @@ Core: **docs-first, phase gates, human approval, short BOLTs, hats (roles)**.
 |---|---|
 | Check environment | `bash scripts/check_env.sh` |
 | Extract candidate models | `bash scripts/whichllm_scan.sh <profile>` |
+| Sync agent skills | `make sync-skills` / `make check-skills` |
 | Validate | `make validate` / `pre-commit run --all-files` |
 | Help | `make help` |
 
