@@ -38,26 +38,37 @@ example: /long-run Proceed with #21 performance verification through to completi
    git checkout -b autopilot/<topic>
    ```
 2. Cut a child branch from the parent branch for each implementation (prefixes follow conventions.md = `feat/` `fix/` `exp/` `model/<id>` `env/` `docs/` `chore/`)
+   - **If the run covers multiple Issues, cut one child branch per Issue** and keep them as separate PRs later (keeps `1 BOLT = 1 PR`, per `review-checklist.md`'s PR-meta rule). For a single-Issue/single-BOLT run, one child branch is enough — skip the split-PR steps below.
+   - Decide the branch source per Issue by dependency:
+     - **Independent** (doesn't touch the same files/decisions as another in-flight Issue in this run): branch from `autopilot/<topic>` directly. These can be reviewed/merged in any order.
+     - **Dependent** (edits the same file, or builds on a not-yet-merged prior Issue's ADR/decision in this run): branch from **that prior Issue's own child branch** — not from `autopilot/<topic>` — so the dependency is visible in the branch history (a stacked branch).
    ```bash
-   git checkout autopilot/<topic>
+   git checkout autopilot/<topic>          # independent case
+   git checkout -b feat/<task-slug>
+
+   git checkout feat/<prior-issue-slug>    # dependent case: stack on the prior Issue's branch
    git checkout -b feat/<task-slug>
    ```
-3. After implementing and verifying on the child branch, merge into the parent branch
-   ```bash
-   git checkout autopilot/<topic>
-   git merge --no-ff feat/<task-slug>
-   ```
-4. Once everything is complete, create a PR from `autopilot/<topic>` to `main`. **Merge only after human approval, via squash** (out of scope for autopilot)
-5. Do not open PRs directly to `main` from in-progress child branches
+3. Verify each child branch on its own (`<PRECOMMIT_CMD>` + tests) before opening its PR. Only merge a child branch into `autopilot/<topic>` if the run's final deliverable is a single combined PR for that topic (single-Issue runs, or when the human explicitly asked for one bundled PR) — otherwise leave child branches unmerged and let each become its own PR (step 4).
+4. Open PRs:
+   - **Multi-Issue run (default)**: open **one PR per Issue**. Independent-Issue PRs target `main`. Stacked/dependent-Issue PRs target the **prior Issue's branch**, not `main`. Rely on `delete_branch_on_merge` (a repo setting) so that once a base PR is squash-merged and its branch deleted, GitHub auto-retargets the dependent PR's base to `main`. State the required merge order in each stacked PR's description (e.g. "merge after #48").
+   - **Single-Issue/single-BOLT run**: create one PR from the child branch (or `autopilot/<topic>` if child branches were merged into it) straight to `main`.
+   - **Merge only after human approval, via squash** in all cases (out of scope for autopilot).
+5. Do not open PRs directly to `main` from in-progress/unverified child branches.
+
+## GitHub/administrative settings changes (not git)
+
+- Changes applied via `gh api` (or the web UI) to shared repository configuration — branch protection, merge method, Dependabot, CODEOWNERS enablement, private vulnerability reporting, etc. — are **out of autopilot's default authority even under Full Access**, because they affect shared infrastructure, not just code in this repo.
+- Treat these exactly like `push`/PR: **pause and get explicit human confirmation before applying**, even when the target Issue itself explicitly asks for the change.
 
 ## Execution steps
 
 0. Reconfirm the objective and completion criteria in 1-3 lines
 1. Prepare the dedicated autopilot parent branch `autopilot/<topic>`
-2. Investigate the impact scope, cut child branches, and implement in the order that delivers value fastest
+2. Investigate the impact scope, cut child branches (one per Issue for multi-Issue runs — see Branch operations for stacked vs. independent), and implement in the order that delivers value fastest
 3. After implementing, run `<PRECOMMIT_CMD>` and any required tests
 4. On failure, self-correct and re-run, repeating until it passes
-5. Merge child branches into the parent sequentially, then finally create a PR from the parent to `main`
+5. Open PRs per Branch operations (one per Issue by default; a single combined PR only for single-Issue runs or explicit bundling requests)
 6. Once the completion criteria are met, report the results, unresolved items, and recommended next actions
 
 ## Default assumptions
