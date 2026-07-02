@@ -41,6 +41,9 @@ example: /long-run Proceed with #21 performance verification through to completi
    ```
 2. Cut a child branch from the parent branch for each implementation (prefixes follow conventions.md = `feat/` `fix/` `exp/` `model/<id>` `env/` `docs/` `chore/`)
    - **If the run covers multiple Issues, cut one child branch per Issue** and keep them as separate PRs later (keeps `1 BOLT = 1 PR`, per `review-checklist.md`'s PR-meta rule). For a single-Issue/single-BOLT run, one child branch is enough — skip the split-PR steps below.
+   - If the target Issue is an EPIC or parent Issue, first identify the child BOLT Issues from the Issue body, labels, and comments (for example, Issues that say `Part of #<epic-number>`). Treat those child BOLTs as the implementation units.
+   - For EPIC runs, default to one child branch and one PR per child BOLT. Use a single bundled child branch/PR only when the human explicitly asks for all tasks together (for example, "Issue 1 のすべてのタスク") or explicitly asks for a bundled PR, and the changes are tightly coupled enough that separate PRs would add review overhead without isolating useful risk.
+   - When bundling child BOLTs into one PR, state the bundle reason in the PR description and in the parent Issue comment, and list the covered child Issue numbers. Do not call the EPIC complete if live measurements, external service setup, or Operations approval remains.
    - Decide the branch source per Issue by dependency:
      - **Independent** (doesn't touch the same files/decisions as another in-flight Issue in this run): branch from `chore/<topic>-coordination` directly. These can be reviewed/merged in any order.
      - **Dependent** (edits the same file, or builds on a not-yet-merged prior Issue's ADR/decision in this run): branch from **that prior Issue's own child branch** — not from `chore/<topic>-coordination` — so the dependency is visible in the branch history (a stacked branch).
@@ -67,7 +70,7 @@ example: /long-run Proceed with #21 performance verification through to completi
 
 0. Reconfirm the objective and completion criteria in 1-3 lines
 1. Prepare the dedicated coordination parent branch `chore/<topic>-coordination`
-2. Investigate the impact scope, cut child branches (one per Issue for multi-Issue runs — see Branch operations for stacked vs. independent), and implement in the order that delivers value fastest
+2. Investigate the impact scope, identify child BOLTs for EPIC/parent Issues, record the split-vs-bundle decision, cut child branches (one per Issue for multi-Issue runs — see Branch operations for stacked vs. independent), and implement in the order that delivers value fastest
 3. After implementing, run `<PRECOMMIT_CMD>` and any required tests
 4. On failure, self-correct and re-run, repeating until it passes
 5. Open PRs per Branch operations (one per Issue by default; a single combined PR only for single-Issue runs or explicit bundling requests)
