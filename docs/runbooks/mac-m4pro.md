@@ -9,13 +9,24 @@
 ## セットアップ
 ```bash
 # Ollama（共通基準）
-ollama pull gemma3:12b          # or qwen2.5-vl 系 / gemma4 系
+ollama pull gemma4:e4b          # or qwen2.5-vl 系 / gemma4:26b 系
 ollama serve                    # OpenAI互換: http://127.0.0.1:11434/v1
 
 # MLX-VLM（実力ライン）
 uv venv --python 3.12 ~/.venv-mlxvlm && source ~/.venv-mlxvlm/bin/activate
 uv pip install mlx-vlm
 python -m mlx_vlm.generate --model <mlx-community/...> --image <path> --prompt "..."
+```
+
+repo 内から再現する場合は [`envs/mac/`](../../envs/mac/) を使う。
+`gemma4:e4b` は smoke test 用のローカル既存モデルであり、比較対象は
+`envs/mac/README.md` と ADR 0008 のモデル方針に従って #4 配下の BOLT で onboarding する。
+
+```bash
+bash envs/mac/check.sh
+OLLAMA_MODEL=gemma4:e4b bash envs/mac/serve-ollama.sh
+MODEL=gemma4:e4b BASE_URL=http://127.0.0.1:11434/v1 bash envs/mac/smoke-ollama.sh
+bash envs/mac/setup-mlx-vlm.sh
 ```
 
 ## PoC(Phase 0) 手順
