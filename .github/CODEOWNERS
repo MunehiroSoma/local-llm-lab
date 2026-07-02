@@ -1,6 +1,2 @@
-# デフォルトのレビュー担当（GitHubユーザ名に置き換えてください）
-# * @your-github-username
-
-# 重要領域は明示（例）
-# /registry/   @your-github-username
-# /docs/adr/   @your-github-username
+# デフォルトのレビュー担当
+* @MunehiroSoma
