@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "local-llm-lab hardware.yaml",
+  "type": "object",
+  "required": ["schema_version", "machines"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "machines": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/machine" }
+    }
+  },
+  "definitions": {
+    "machine": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "os",
+        "cpu",
+        "ram_gb",
+        "accelerator",
+        "vram_gb",
+        "mem_bandwidth_gbs",
+        "compute",
+        "runtimes",
+        "role"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "os": { "type": "string", "minLength": 1 },
+        "cpu": { "type": "string", "minLength": 1 },
+        "ram_gb": { "type": "number", "exclusiveMinimum": 0 },
+        "accelerator": { "type": "string", "minLength": 1 },
+        "vram_gb": { "type": "number", "exclusiveMinimum": 0 },
+        "mem_bandwidth_gbs": { "type": "number", "exclusiveMinimum": 0 },
+        "compute": { "type": "string", "minLength": 1 },
+        "runtimes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

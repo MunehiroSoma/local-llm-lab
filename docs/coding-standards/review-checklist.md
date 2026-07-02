@@ -20,6 +20,19 @@
 | テスト | [`review-checklist/04-test.md`](review-checklist/04-test.md) | 差分のみ | 軽量〜中位 |
 | 設計整合性 | [`review-checklist/05-design-consistency.md`](review-checklist/05-design-consistency.md) | 差分 + ADR/研究ノート | 上位 |
 | harness-eval-registry | [`review-checklist/06-harness-eval-registry.md`](review-checklist/06-harness-eval-registry.md) | 差分のみ（registry変更時はADRも） | 上位 |
+| Webセキュリティ（条件付き） | [`review-checklist/07-web-security.md`](review-checklist/07-web-security.md) | 差分のみ | 上位 |
+| データ操作・リソース管理 | [`review-checklist/08-data-operations.md`](review-checklist/08-data-operations.md) | 差分のみ | 上位 |
+| 外部API連携 | [`review-checklist/09-external-api.md`](review-checklist/09-external-api.md) | 差分のみ | 上位 |
+| CI/CD・サプライチェーン（条件付き） | [`review-checklist/10-cicd-supply-chain.md`](review-checklist/10-cicd-supply-chain.md) | 差分のみ | 上位 |
+| インフラ・コンテナ（条件付き） | [`review-checklist/11-infra-container.md`](review-checklist/11-infra-container.md) | 差分のみ | 上位 |
+
+条件付き観点は常時起動せず、差分の内容に応じて起動する（下表）。
+
+| 観点 | 起動条件 |
+|---|---|
+| Webセキュリティ | React(`web/`)/FastAPI 等の Web/GUI 実装を含む差分のとき（ADR 0007 Phase B以降） |
+| CI/CD・サプライチェーン | `.github/workflows/` の変更、または依存関係（`pyproject.toml`/`uv.lock`/`web/package.json`等）の追加・更新を含む差分のとき |
+| インフラ・コンテナ | `envs/` の Docker/compose 実装を含む差分のとき |
 
 観点特化エージェントのノイズ抑制ルール・読み取り専用権限・出力フォーマットは
 [`.claude/skills/review/SKILL.md`](../../.claude/skills/review/SKILL.md) を参照。

@@ -1,5 +1,6 @@
 # 自前タスク評価（要約・タグ付け）の雛形。
-# 実行: npx promptfoo@latest eval -c harness/task/promptfoo/promptfooconfig.example.yaml
+# 実行: npx promptfoo@0.121.17 eval -c harness/task/promptfoo/promptfooconfig.example.yaml
+#   （版固定。@latest は過去スコアとの比較が壊れるため使わない。CI/CDレビュー資料 C-2）
 # モデル差し替え = provider の apiBaseUrl を変えるだけ（ADR 0002）。
 description: "summarize/tag eval — JSONスキーマ + LLM-rubric（日本語）"
 

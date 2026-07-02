@@ -27,6 +27,37 @@ repos:
       - id: mypy
         args: ["--config-file=pyproject.toml"]
 
+  # registry/*.yaml の構造検証（Issue #45, B-4）。yaml.safe_load による構文チェックから格上げ。
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.37.4
+    hooks:
+      - id: check-jsonschema
+        name: validate registry/models.yaml schema
+        files: ^registry/models\.ya?ml$
+        args: ["--schemafile", "registry/schema/models.schema.json"]
+      - id: check-jsonschema
+        name: validate registry/hardware.yaml schema
+        files: ^registry/hardware\.ya?ml$
+        args: ["--schemafile", "registry/schema/hardware.schema.json"]
+
+  # 秘密情報のコンテンツベース検知（detect-private-keyは鍵形式のみのため補完。Issue #45, D-1）
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # GitHub Actions workflow の構文/設定ミス検出（Issue #45, B-6）
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  # scripts/*.sh の静的解析（Issue #45, B-7）
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
   - repo: local
     hooks:
       - id: guard-golden-data
@@ -35,9 +66,9 @@ repos:
         language: script
         pass_filenames: false
         always_run: true
-      - id: validate-registry
-        name: validate registry YAML
-        entry: python -c "import yaml,sys;[yaml.safe_load(open(f)) for f in sys.argv[1:]]"
-        language: python
-        additional_dependencies: ["pyyaml"]
-        files: ^registry/.*\.ya?ml$
+      - id: guard-results-append-only
+        name: guard results.csv append-only (鉄則4)
+        entry: scripts/guard_results_append_only.sh
+        language: script
+        pass_filenames: false
+        always_run: true

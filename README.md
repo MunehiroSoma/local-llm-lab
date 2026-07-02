@@ -13,7 +13,7 @@
 bash scripts/check_env.sh
 
 # 2) 候補モデルの機械的な当たり付け（WhichLLM）
-bash scripts/whichllm_scan.sh          # uvx whichllm@latest --profile coding 等
+bash scripts/whichllm_scan.sh          # uvx whichllm==0.5.14 --profile coding 等（版固定）
 
 # 3) 評価ハーネス（今後実装）
 make help

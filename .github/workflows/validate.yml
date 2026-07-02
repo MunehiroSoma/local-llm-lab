@@ -1,6 +1,7 @@
 # ⚠️ 最小・任意のCI（ADR 0004）。一次ゲートはローカルの pre-commit。
 # Public リポジトリなので GitHub-hosted ランナーは無料・無制限。
-# ここでは pre-commit を --no-verify で回避された場合に備え、機密データ混入だけをサーバ側でも防ぐ。
+# ここでは pre-commit を --no-verify で回避された場合に備え、機密データ混入(golden data)と
+# results.csv の書き換え(鉄則4)だけをサーバ側でも防ぐ。
 # 不要なら本ファイルを削除可。GPU評価等でセルフホストする場合のみ runs-on を [self-hosted] に変更し、
 # かつ Settings→Actions で外部PRの承認必須にすること（fork PR の任意コード実行リスク）。
 name: guard
@@ -13,10 +14,24 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: guard-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   guard-golden-data:
     runs-on: ubuntu-latest        # セルフホスト時は [self-hosted]（要アクセス制限）
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0           # results guard で origin/main と比較するため全履歴を取得
       - name: private golden data must not be committed
         run: bash scripts/guard_golden.sh
+      - name: results.csv must be append-only (鉄則4)
+        env:
+          # push イベントでは origin/main が push 後の自分自身を指してしまい比較が無意味になるため、
+          # push 直前のSHA(github.event.before)と比較する。pull_request では base(origin/main)と比較。
+          GUARD_RESULTS_BASE_REF: ${{ github.event_name == 'push' && github.event.before || 'origin/main' }}
+          GUARD_RESULTS_SOURCE: worktree
+        run: bash scripts/guard_results_append_only.sh
