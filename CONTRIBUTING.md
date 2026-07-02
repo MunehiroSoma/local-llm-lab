@@ -5,10 +5,13 @@
 
 ## セットアップ
 ```bash
-uv sync                       # 依存（任意グループは pyproject.toml 参照）
+uv sync --frozen              # uv.lock 通りに依存を再現（任意グループは pyproject.toml 参照）
 pre-commit install            # ローカルの一次ゲート（ADR 0004）
 bash scripts/check_env.sh     # このマシンの環境確認
 ```
+- `uv.lock` はコミット対象。依存を追加/更新したら `uv lock` を実行し、`uv.lock` の差分もコミットする。
+- 通常のセットアップでは必ず `--frozen` を使い、意図しない lock 更新を避ける
+  （`--frozen` なしの `uv sync` は `pyproject.toml` の変更を lock に反映してしまう）。
 
 ## 作業フロー（ai-dev-kit スキルと対応）
 1. `start` / `new-feature` … Issue 確認 → `main` からブランチ作成
