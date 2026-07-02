@@ -1,0 +1,8 @@
+name: smoke-coding-agent
+model: qwen3-8b
+runtime: ollama
+env: mac
+profile: coding
+workdir: .
+agent_command: "python3 -c 'print(\"agent placeholder\")'"
+test_command: "python3 -c 'print(\"tests placeholder\")'"

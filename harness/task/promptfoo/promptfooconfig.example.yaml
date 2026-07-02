@@ -14,14 +14,15 @@ providers:
 prompts:
   - |
     次の文章を日本語で3行に要約し、内容を表すタグを付けてJSONのみで返してください。
-    スキーマ: {"summary": string, "tags": string[]}
+    スキーマ: harness/task/promptfoo/schema.summary-tags.json
+    形式: {"summary": string, "tags": string[]}
     文章:
     {{input}}
 
 tests:
   # 実データは datasets/golden/ から生成（ここは samples を1件だけ例示）
   - vars:
-      input: "（datasets/golden/samples/ のテキストを差し込む）"
+      input: "これは公開可能な架空サンプルです。ローカル LLM 評価では、モデルを OpenAI 互換 API 経由で差し替え、同じプロンプトと同じ採点ルーブリックを使って比較します。"
     assert:
       - type: is-json
       - type: javascript
