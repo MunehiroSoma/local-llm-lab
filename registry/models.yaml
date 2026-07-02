@@ -52,7 +52,7 @@ models:
   - id: qwen3-coder-30b-a3b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
-    revision: null
+    revision: b2cff646eb4bb1d68355c01b18ae02e7cf42d120
     modality: [text]
     params: 30B
     active_params: 3.3B
@@ -61,7 +61,7 @@ models:
     max_model_len: 262144
     profiles: [coding]
     target_envs: [mac, dgx-spark]
-    notes: "Ollamaコーディング上位。~19GB。"
+    notes: "Ollamaコーディング上位。Mac/Ollama実測は qwen3-coder:30b Q4_K_M。"
 
   - id: qwen3-coder-next-80b-a3b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
@@ -92,8 +92,8 @@ models:
 
   - id: devstral-small-2
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
-    hf_repo: mistralai/Devstral-Small-2   # ← 正式repo名は要確認
-    revision: null
+    hf_repo: mistralai/Devstral-Small-2-24B-Instruct-2512
+    revision: c599e8e56f3f9110e97f0dc0450ce248e3334d84
     modality: [text]
     params: 24B
     quantization: [q4_k_m, fp8]
@@ -101,7 +101,7 @@ models:
     max_model_len: 131072
     profiles: [coding]
     target_envs: [rtx-5060ti, mac, dgx-spark]
-    notes: "Mistralのエージェント特化。SWE-bench ~68%。16GBの上限級。"
+    notes: "Mistralのエージェント特化。Mac/Ollama実測は devstral-small-2 Q4_K_M。Ollama reported context: 393216。"
 
   # ---- VLM（視覚）----
   - id: qwen2.5-vl-7b
@@ -148,8 +148,8 @@ models:
   # ---- 日本語・要約・タグ付け ----
   - id: lfm2.5-1.2b-jp-202606
     status: candidate
-    hf_repo: LiquidAI/LFM2.5-1.2B-JP-202606
-    revision: null
+    hf_repo: LiquidAI/LFM2.5-1.2B-JP-202606-GGUF
+    revision: 8c74801fdfe71394c59d3f519b86de305ff49f00
     modality: [text]
     params: 1.17B
     quantization: [bf16, q4_k_m, q5_k_m, q6_k, q8_0]
@@ -157,12 +157,12 @@ models:
     max_model_len: 32768
     profiles: [summarize, concierge, coding]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
-    notes: "Liquid AIの日本語特化1.2B級。軽量/省電力/構造化出力/日英アシスタントの第一候補。"
+    notes: "Liquid AIの日本語特化1.2B級。Mac/Ollama実測はGGUF Q4_K_M。base repo HEAD: 52b8b4475311a63bf839c6494f78f8ad59d13515。"
 
   - id: llm-jp-4-8b-instruct
     status: candidate
-    hf_repo: llm-jp/llm-jp-4-8b-instruct
-    revision: null
+    hf_repo: mmnga-o/llm-jp-4-8b-instruct-gguf
+    revision: 7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1
     modality: [text]
     params: 8.6B
     quantization: [bf16, q4_k_m]
@@ -170,7 +170,7 @@ models:
     max_model_len: 65536
     profiles: [summarize, concierge, coding]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
-    notes: "LLM-jp/NIIの日本製8B instruct。日本語baseline。q4_k_mはコミュニティGGUF経路。"
+    notes: "LLM-jp/NIIの日本製8B instruct。Mac/Ollama実測はコミュニティGGUF Q4_K_M。base repo HEAD: 098f2b2cf33021eba19a6d3582aa3d071ccc0aff。"
 
   - id: qwen3-8b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）

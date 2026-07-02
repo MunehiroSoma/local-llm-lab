@@ -27,6 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--revision")
     parser.add_argument("--max-model-len", type=int)
     parser.add_argument("--prompt", default="日本語で、ローカルLLM評価の要点を3文で説明してください。")
+    parser.add_argument("--stop", action="append", help="Optional stop sequence; repeat to pass multiple values.")
     parser.add_argument("--max-tokens", type=int, default=256)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--warmups", type=int, default=1)
@@ -46,6 +47,7 @@ def main(argv: list[str] | None = None) -> int:
             model=args.model,
             messages=[{"role": "user", "content": args.prompt}],
             max_tokens=args.max_tokens,
+            stop=args.stop,
         ),
         repeats=args.repeats,
         warmups=args.warmups,

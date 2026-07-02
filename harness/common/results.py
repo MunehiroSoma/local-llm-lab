@@ -19,7 +19,7 @@ def ensure_results_file(path: Path) -> None:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(RESULT_COLUMNS)
 
 
@@ -27,7 +27,7 @@ def append_result(path: Path, row: ResultRow) -> None:
     """Append one result row without modifying existing rows."""
     ensure_results_file(path)
     with path.open("a", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=RESULT_COLUMNS)
+        writer = csv.DictWriter(handle, fieldnames=RESULT_COLUMNS, lineterminator="\n")
         writer.writerow(row.to_csv_record())
 
 

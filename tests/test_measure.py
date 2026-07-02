@@ -6,6 +6,16 @@ from typing import Any
 from harness.common.measure import ChatPrompt, measure_chat_completion
 
 
+def test_chat_prompt_payload_includes_stop_when_set() -> None:
+    prompt = ChatPrompt(
+        model="fake",
+        messages=[{"role": "user", "content": "hi"}],
+        stop=["<|end|>"],
+    )
+
+    assert prompt.payload(stream=True)["stop"] == ["<|end|>"]
+
+
 class FakeClient:
     def stream_chat_completion(self, _payload: Mapping[str, Any]) -> Iterator[dict[str, Any]]:
         yield {"choices": [{"delta": {"content": "hello"}}]}
