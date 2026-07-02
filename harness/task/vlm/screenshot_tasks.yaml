@@ -1,0 +1,128 @@
+name: vlm-screenshot-task-set
+version: v1
+description: Synthetic public sample screenshots for lightweight Layer 4 VLM evaluation.
+tasks:
+  - id: synthetic-ci-failure
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-ci-failure.svg
+    category: ci-error-reading
+    source: synthetic; generated for this public repository
+    prompt: "このCI画面を読み取り、失敗しているジョブ名、主なエラー、次に確認すべきコマンドを日本語で答えてください。"
+    expected: unit-tests job failed because TypeError None is not iterable; next action is pytest tests/test_task_helpers.py.
+    markers:
+      - [unit-tests, unit tests]
+      - [failed, failure]
+      - TypeError
+      - [None is not iterable, not iterable]
+      - pytest
+    threshold: 0.8
+  - id: synthetic-login-error
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-login-error.svg
+    category: error-state
+    source: synthetic; generated for this public repository
+    prompt: "ログイン画面の状態、表示されているエラー、ユーザーが次に取るべき行動を日本語で説明してください。"
+    expected: Login failed because two-factor code expired; user should request a new code.
+    markers:
+      - [Login failed, failed]
+      - [two-factor, "2FA", verification code]
+      - expired
+      - [Request new code, new code]
+    threshold: 0.75
+  - id: synthetic-calendar-conflict
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-calendar-conflict.svg
+    category: calendar-conflict
+    source: synthetic; generated for this public repository
+    prompt: "予定表を見て、衝突している予定と移動・準備上の注意点を日本語で要約してください。"
+    expected: Design review and dentist appointment overlap at 10:30; prepare deck before 10:00.
+    markers:
+      - [Design review, review]
+      - [Dentist, dentist appointment]
+      - ["10:30", overlap, conflict]
+      - [Prepare deck, deck]
+    threshold: 0.75
+  - id: synthetic-dashboard-kpi
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-dashboard-kpi.svg
+    category: dashboard-kpi
+    source: synthetic; generated for this public repository
+    prompt: "ダッシュボードのKPIを読み取り、悪化している指標と優先して見るべき領域を日本語で答えてください。"
+    expected: Incident rate is up 18 percent and payment errors need attention while uptime is 99.94 percent.
+    markers:
+      - [Incident rate, incident]
+      - ["18%", 18 percent]
+      - [Payment errors, payment]
+      - ["99.94%", uptime]
+    threshold: 0.75
+  - id: synthetic-data-table-filter
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-data-table-filter.svg
+    category: table-ocr
+    source: synthetic; generated for this public repository
+    prompt: "表のフィルタ条件、表示されている高優先度の行、期限切れの項目を日本語で説明してください。"
+    expected: Filter is Priority High; INV-204 is overdue and owned by Aki; API-118 is due today.
+    markers:
+      - [Priority, High]
+      - [INV-204, INV 204]
+      - [Overdue, overdue]
+      - [Aki]
+      - [API-118, API 118]
+    threshold: 0.8
+  - id: synthetic-settings-permissions
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-settings-permissions.svg
+    category: settings-state
+    source: synthetic; generated for this public repository
+    prompt: "設定画面で有効・無効になっている権限と、警告されているリスクを日本語で整理してください。"
+    expected: Screen recording is enabled, microphone is disabled, and external sharing is allowed with a warning.
+    markers:
+      - [Screen recording, recording]
+      - [enabled, "on"]
+      - [Microphone, mic]
+      - [disabled, "off"]
+      - [External sharing, sharing]
+    threshold: 0.8
+  - id: synthetic-checkout-warning
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-checkout-warning.svg
+    category: checkout-warning
+    source: synthetic; generated for this public repository
+    prompt: "購入確認画面の警告、合計金額、ユーザーが確認すべき項目を日本語で答えてください。"
+    expected: Total is $148.20 and shipping address is unverified; review address before placing order.
+    markers:
+      - ["$148.20", "148.20"]
+      - [Shipping address, address]
+      - [unverified, not verified]
+      - [Review address, address before]
+    threshold: 0.75
+  - id: synthetic-mobile-notifications
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-mobile-notifications.svg
+    category: mobile-notification
+    source: synthetic; generated for this public repository
+    prompt: "スマートフォンの通知一覧から、緊急度が高い通知と理由を日本語で説明してください。"
+    expected: Battery health alert is urgent because service is recommended; calendar reminder is lower urgency.
+    markers:
+      - [Battery health, battery]
+      - [Service recommended, service]
+      - [urgent, high]
+      - [Calendar, reminder]
+    threshold: 0.75
+  - id: synthetic-code-review
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-code-review.svg
+    category: code-review-ui
+    source: synthetic; generated for this public repository
+    prompt: "コードレビュー画面の指摘内容、対象ファイル、推奨されている修正を日本語で説明してください。"
+    expected: Comment on app.py line 42 asks to avoid broad except and catch ValueError.
+    markers:
+      - [app.py]
+      - [line 42, "42"]
+      - [broad except, except]
+      - [ValueError]
+    threshold: 0.75
+  - id: synthetic-chart-tooltip
+    image: ../../../datasets/golden/samples/vlm/screenshots/synthetic-chart-tooltip.svg
+    category: chart-tooltip
+    source: synthetic; generated for this public repository
+    prompt: "グラフとツールチップを読み取り、ピークの月、値、そこから言える傾向を日本語で答えてください。"
+    expected: May is the peak at 42 tickets; June drops to 27, so incidents improved after the peak.
+    markers:
+      - [May]
+      - ["42"]
+      - [June]
+      - ["27"]
+      - [drop, improved, decreased]
+    threshold: 0.8

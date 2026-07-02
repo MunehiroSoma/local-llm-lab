@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#f4f7fb"/>
+  <text x="55" y="72" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#0f172a">Operations Dashboard</text>
+  <rect x="55" y="115" width="240" height="140" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="80" y="160" font-family="Arial, sans-serif" font-size="20" fill="#475569">Uptime</text>
+  <text x="80" y="215" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#047857">99.94%</text>
+  <rect x="330" y="115" width="240" height="140" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="355" y="160" font-family="Arial, sans-serif" font-size="20" fill="#475569">Incident rate</text>
+  <text x="355" y="215" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#b91c1c">+18%</text>
+  <rect x="605" y="115" width="240" height="140" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="630" y="160" font-family="Arial, sans-serif" font-size="20" fill="#475569">Payment errors</text>
+  <text x="630" y="215" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#b45309">37</text>
+  <text x="80" y="330" font-family="Arial, sans-serif" font-size="24" fill="#0f172a">Priority area: Payment errors</text>
+  <text x="80" y="370" font-family="Arial, sans-serif" font-size="20" fill="#475569">Investigate checkout API before next release.</text>
+</svg>

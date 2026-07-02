@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#ffffff"/>
+  <text x="50" y="70" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#111827">Issue Tracker</text>
+  <rect x="50" y="100" width="800" height="46" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="70" y="130" font-family="Arial, sans-serif" font-size="20" fill="#1d4ed8">Filter: Priority = High</text>
+  <rect x="50" y="180" width="800" height="55" fill="#f3f4f6"/>
+  <text x="70" y="215" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#374151">ID</text>
+  <text x="210" y="215" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#374151">Owner</text>
+  <text x="360" y="215" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#374151">Due</text>
+  <text x="520" y="215" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#374151">Status</text>
+  <text x="70" y="280" font-family="Arial, sans-serif" font-size="20" fill="#111827">INV-204</text>
+  <text x="210" y="280" font-family="Arial, sans-serif" font-size="20" fill="#111827">Aki</text>
+  <text x="360" y="280" font-family="Arial, sans-serif" font-size="20" fill="#b91c1c">Overdue</text>
+  <text x="520" y="280" font-family="Arial, sans-serif" font-size="20" fill="#111827">Blocked</text>
+  <text x="70" y="340" font-family="Arial, sans-serif" font-size="20" fill="#111827">API-118</text>
+  <text x="210" y="340" font-family="Arial, sans-serif" font-size="20" fill="#111827">Mina</text>
+  <text x="360" y="340" font-family="Arial, sans-serif" font-size="20" fill="#92400e">Today</text>
+  <text x="520" y="340" font-family="Arial, sans-serif" font-size="20" fill="#111827">Review</text>
+</svg>

@@ -4,6 +4,7 @@ from harness.capability.run import extract_metric
 from harness.task.deepeval.rubric import aggregate_scores
 from harness.task.promptfoo.evaluate_json import score_summary_tags
 from harness.task.vlm.markers import score_markers
+from harness.task.vlm.screenshot_eval import DEFAULT_TASK_SET, load_task_set, score_outputs, summarize_results
 
 
 def test_score_summary_tags_accepts_expected_schema() -> None:
@@ -35,3 +36,29 @@ def test_score_markers_applies_threshold() -> None:
 
     assert score.passed is False
     assert score.ratio == 0.5
+
+
+def test_load_screenshot_task_set() -> None:
+    tasks = load_task_set(DEFAULT_TASK_SET)
+
+    assert len(tasks) == 10
+    assert {task.task_id for task in tasks} >= {"synthetic-ci-failure", "synthetic-chart-tooltip"}
+    assert all(task.image.exists() for task in tasks)
+
+
+def test_score_screenshot_outputs() -> None:
+    tasks = load_task_set(DEFAULT_TASK_SET)
+    outputs = {
+        "synthetic-ci-failure": (
+            "The unit-tests job failed with TypeError because None is not iterable. "
+            "Run pytest tests/test_task_helpers.py next."
+        )
+    }
+
+    results = score_outputs(tasks[:1], outputs)
+    summary = summarize_results(results)
+
+    assert results[0].score.passed is True
+    assert results[0].error is None
+    assert summary["passed_count"] == 1
+    assert summary["mean_score"] == 1.0

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#f6f8fa"/>
+  <text x="55" y="70" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#24292f">Pull Request Review</text>
+  <rect x="55" y="105" width="790" height="320" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="80" y="150" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#24292f">app.py</text>
+  <rect x="80" y="180" width="735" height="90" fill="#f6f8fa"/>
+  <text x="100" y="215" font-family="Menlo, monospace" font-size="18" fill="#57606a">40  try:</text>
+  <text x="100" y="245" font-family="Menlo, monospace" font-size="18" fill="#57606a">41      parse_config(path)</text>
+  <text x="100" y="275" font-family="Menlo, monospace" font-size="18" fill="#cf222e">42  except Exception:</text>
+  <rect x="80" y="305" width="735" height="74" rx="6" fill="#fff8c5" stroke="#d4a72c"/>
+  <text x="105" y="338" font-family="Arial, sans-serif" font-size="19" fill="#9a6700">line 42: Avoid broad except.</text>
+  <text x="105" y="365" font-family="Arial, sans-serif" font-size="19" fill="#9a6700">Catch ValueError instead.</text>
+</svg>
