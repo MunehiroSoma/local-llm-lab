@@ -16,6 +16,12 @@ Commit the changes on the current branch, push, and create a PR, all in one flow
 > This repository's `<MERGE_STYLE>` = **squash** (per conventions.md, fixed).
 > Merge only after passing through the AI-DLC Construction phase completion gate (PR review approval).
 
+## Language Policy
+
+- Write GitHub PR titles and bodies in Japanese by default.
+- Keep commit messages, code identifiers, commands, labels, and required GitHub keywords such as `Closes #XX` or `N/A` in their original language.
+- Use another language only when the human explicitly requests it.
+
 ## Usage
 
 ```

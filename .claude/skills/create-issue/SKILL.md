@@ -13,6 +13,12 @@ name: create-issue
 
 Register GitHub Issues with correct granularity and structure.
 
+## Language Policy
+
+- Write GitHub Issue titles and bodies in Japanese by default.
+- Keep code identifiers, package names, commands, labels, and required GitHub keywords in their original language.
+- Use another language only when the human explicitly requests it.
+
 ## Usage
 
 ```
