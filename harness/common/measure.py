@@ -22,16 +22,20 @@ class ChatPrompt:
     messages: Sequence[Mapping[str, Any]]
     max_tokens: int = 256
     temperature: float = 0.0
+    stop: Sequence[str] | None = None
 
     def payload(self, *, stream: bool) -> dict[str, Any]:
         """Build an OpenAI-compatible chat completion payload."""
-        return {
+        payload: dict[str, Any] = {
             "model": self.model,
             "messages": list(self.messages),
             "max_tokens": self.max_tokens,
             "temperature": self.temperature,
             "stream": stream,
         }
+        if self.stop is not None:
+            payload["stop"] = list(self.stop)
+        return payload
 
 
 @dataclass(frozen=True)

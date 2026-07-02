@@ -18,6 +18,7 @@ def test_append_result_creates_fixed_header(tmp_path: Path) -> None:
     assert tuple(rows[0]) == RESULT_COLUMNS
     assert rows[1][0] == "qwen3-8b"
     assert rows[1][8] == "42"
+    assert "\r" not in path.read_text(encoding="utf-8")
 
 
 def test_append_result_rejects_header_mismatch(tmp_path: Path) -> None:
