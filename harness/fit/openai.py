@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from harness.common.measure import ChatPrompt, measure_chat_completion
+from harness.common.multimodal import build_user_content
 from harness.common.openai_client import OpenAICompatClient
 from harness.common.registry import load_registry, model_defaults
 from harness.common.results import append_result
@@ -32,13 +33,19 @@ def run_probe(
     api_key: str | None,
     model: str,
     prompt: str,
+    image: Path | None,
+    image_detail: str | None,
     timeout_s: float,
 ) -> tuple[FitStatus, str]:
     """Run a short completion to verify the model is loaded and usable."""
     client = OpenAICompatClient(base_url=base_url, api_key=api_key, timeout_s=timeout_s)
     timed = measure_chat_completion(
         client,
-        ChatPrompt(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=1),
+        ChatPrompt(
+            model=model,
+            messages=[{"role": "user", "content": build_user_content(prompt, image=image, image_detail=image_detail)}],
+            max_tokens=1,
+        ),
         stream=False,
     )
     return classify_fit(timed.error), timed.error or ""
@@ -57,6 +64,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--revision")
     parser.add_argument("--max-model-len", type=int)
     parser.add_argument("--prompt", default="Reply with OK.")
+    parser.add_argument("--image", type=Path, help="Optional image path for VLM fit probes.")
+    parser.add_argument("--image-detail", help="Optional OpenAI image detail hint, such as low or high.")
     parser.add_argument("--timeout-s", type=float, default=120.0)
     parser.add_argument("--results", type=Path, default=Path("results/results.csv"))
     parser.add_argument("--append-results", action="store_true")
@@ -69,6 +78,8 @@ def main(argv: list[str] | None = None) -> int:
         api_key=args.api_key,
         model=args.model,
         prompt=args.prompt,
+        image=args.image,
+        image_detail=args.image_detail,
         timeout_s=args.timeout_s,
     )
     row = ResultRow(

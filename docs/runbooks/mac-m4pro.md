@@ -34,6 +34,26 @@ bash envs/mac/setup-mlx-vlm.sh
 2. Speed: 単発 tok/s・TTFT（画像込みの前処理時間も）
 3. コーディング候補 Qwen3-Coder-30B-A3B(MoE) の単発速度（帯域273でMoEが効くか）
 
+Ollama の OpenAI互換 endpoint で画像+テキストを測る場合:
+
+```bash
+python3 -m harness.speed.openai \
+  --model gemma4-26b-a4b \
+  --env mac \
+  --base-url http://127.0.0.1:11434/v1 \
+  --runtime ollama \
+  --profile vlm \
+  --quantization q4_k_m \
+  --max-model-len 128000 \
+  --prompt "この画像を日本語で一文で説明してください。" \
+  --image <image-path>
+```
+
+Gemma4 の Ollama stream は `delta.reasoning` に生成を流すことがあるため、harness は
+`delta.content` が空の場合に reasoning delta も TTFT/tok-s の計測対象として扱う。non-streaming
+でも `message.content` が空で `message.reasoning` 側に生成が入る場合があるため、確認出力も
+同じ fallback で扱う。
+
 ## 計測
 - 電力: `sudo powermetrics --samplers gpu_power,cpu_power -i 1000`（SoC全体）
 - 速度: MLXの内蔵計時 + OpenAI互換化して GenAI-Perf/`vllm bench` 併用可

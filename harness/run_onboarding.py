@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from harness.common.measure import ChatPrompt, benchmark_chat_completion, measure_chat_completion
+from harness.common.multimodal import build_user_content
 from harness.common.openai_client import OpenAICompatClient
 from harness.common.registry import load_registry, model_defaults
 from harness.common.results import append_result
@@ -28,6 +29,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--revision")
     parser.add_argument("--max-model-len", type=int)
     parser.add_argument("--prompt", default="日本語で、ローカルLLM評価の目的を3文で説明してください。")
+    parser.add_argument("--image", type=Path, help="Optional image path for VLM fit and speed runs.")
+    parser.add_argument("--image-detail", help="Optional OpenAI image detail hint, such as low or high.")
     parser.add_argument("--stop", action="append", help="Optional stop sequence; repeat to pass multiple values.")
     parser.add_argument("--max-tokens", type=int, default=256)
     parser.add_argument("--repeats", type=int, default=3)
@@ -40,9 +43,10 @@ def main(argv: list[str] | None = None) -> int:
     registry = load_registry()
     defaults = model_defaults(registry, args.model, args.env)
     client = OpenAICompatClient(base_url=args.base_url, api_key=args.api_key, timeout_s=args.timeout_s)
+    user_content = build_user_content(args.prompt, image=args.image, image_detail=args.image_detail)
     prompt = ChatPrompt(
         model=args.model,
-        messages=[{"role": "user", "content": args.prompt}],
+        messages=[{"role": "user", "content": user_content}],
         max_tokens=args.max_tokens,
         stop=args.stop,
     )

@@ -34,3 +34,41 @@ def test_measure_streaming_completion_uses_usage_tokens() -> None:
     assert timed.content == "hello world"
     assert timed.completion_tokens == 2
     assert timed.tok_s is not None
+
+
+class FakeReasoningClient:
+    def stream_chat_completion(self, _payload: Mapping[str, Any]) -> Iterator[dict[str, Any]]:
+        yield {"choices": [{"delta": {"content": "", "reasoning": "thinking"}}]}
+        yield {"choices": [{"delta": {"content": " answer"}}], "usage": {"completion_tokens": 2}}
+
+    def chat_completion(self, _payload: Mapping[str, Any]) -> dict[str, Any]:
+        return {"choices": [{"message": {"content": "answer"}}], "usage": {"completion_tokens": 1}}
+
+
+def test_measure_streaming_completion_counts_reasoning_delta() -> None:
+    timed = measure_chat_completion(
+        FakeReasoningClient(),  # type: ignore[arg-type]
+        ChatPrompt(model="fake", messages=[{"role": "user", "content": "hi"}]),
+    )
+
+    assert timed.content == "thinking answer"
+    assert timed.ttft_ms is not None
+
+
+class FakeNonStreamingReasoningClient:
+    def stream_chat_completion(self, _payload: Mapping[str, Any]) -> Iterator[dict[str, Any]]:
+        yield {"choices": [{"delta": {"content": "answer"}}]}
+
+    def chat_completion(self, _payload: Mapping[str, Any]) -> dict[str, Any]:
+        return {"choices": [{"message": {"content": "", "reasoning": "thinking answer"}}]}
+
+
+def test_measure_non_streaming_completion_counts_reasoning_message() -> None:
+    timed = measure_chat_completion(
+        FakeNonStreamingReasoningClient(),  # type: ignore[arg-type]
+        ChatPrompt(model="fake", messages=[{"role": "user", "content": "hi"}]),
+        stream=False,
+    )
+
+    assert timed.content == "thinking answer"
+    assert timed.completion_tokens == 2

@@ -174,7 +174,10 @@ def _extract_content_delta(chunk: Mapping[str, Any]) -> str:
     if not isinstance(delta, dict):
         return ""
     content = delta.get("content")
-    return content if isinstance(content, str) else ""
+    if isinstance(content, str) and content:
+        return content
+    reasoning = delta.get("reasoning")
+    return reasoning if isinstance(reasoning, str) else ""
 
 
 def _extract_message_content(response: Mapping[str, Any]) -> str:
@@ -188,7 +191,10 @@ def _extract_message_content(response: Mapping[str, Any]) -> str:
     if not isinstance(message, dict):
         return ""
     content = message.get("content")
-    return content if isinstance(content, str) else ""
+    if isinstance(content, str) and content:
+        return content
+    reasoning = message.get("reasoning")
+    return reasoning if isinstance(reasoning, str) else ""
 
 
 def _tokens_per_second(completion_tokens: int | None, total_ms: float, ttft_ms: float | None) -> float | None:
