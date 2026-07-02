@@ -25,6 +25,7 @@ Register GitHub Issues with correct granularity and structure.
 |---|---|---|
 | **Task Issue** | Per implementation task (granularity completable in 1-3 days) | Phase/type label |
 | **Bug Issue** | When a defect in the code is found | `bug` + `priority:S/A/B` |
+| **Security / Dependency Issue** | When a Dependabot alert, vulnerable dependency, or supply-chain risk needs tracking | `dependencies` + phase/type label |
 | **Epic Issue** | Parent issue grouping multiple Tasks | `epic` |
 
 ## Pre-Registration Review (Required)
@@ -77,6 +78,53 @@ Title: [Bug] <problem summary>
 - #XX
 ```
 
+## Security / Dependabot Alert Issue Template
+
+Use this when turning Dependabot alerts, vulnerable packages, or supply-chain findings into an Issue.
+
+Before drafting, collect:
+
+- Alert number(s), if available
+- Ecosystem, package name, severity, and vulnerable version range
+- Whether GitHub reports a patched version
+- Whether the package is a direct dependency or transitive dependency
+- Dependency path, if it can be identified from the lockfile or package manager
+- Recommended disposition: update, remove, isolate, or risk-accept with rationale
+
+```
+Title: [BOLT] Dependabot alert: <package(s)> <decision/action summary>
+
+## Parent Issue
+#<number> <parent task name>
+
+## Summary
+Dependabot alerts or dependency risk:
+
+- `package-a` / ecosystem / severity / vulnerable: `<range>` / patched: `<version or none>`
+- `package-b` / ecosystem / severity / vulnerable: `<range>` / patched: `<version or none>`
+
+Dependency path:
+- `<direct package>` is a direct dependency in `<file>`
+- `<transitive package>` is pulled in via `<direct package>`
+
+Recommended direction:
+- <update/remove/isolate/risk-accept> because <short rationale>
+
+## Tasks
+- [ ] Decide whether the dependency is still needed
+- [ ] Apply the chosen mitigation or document explicit risk acceptance
+- [ ] Update the lockfile if dependencies changed
+- [ ] Confirm the alert is resolved, or record why it remains open
+
+## Completion Criteria
+- The alert is resolved, or the risk-acceptance rationale is recorded in the Issue
+- If dependencies changed, the lockfile is updated and frozen install still works
+- Related PR is merged to `main`
+
+## Related
+- #XX
+```
+
 ## Example gh Command
 
 ```bash
@@ -85,6 +133,9 @@ gh issue create --repo <owner>/<repo> \
   --body "..." \
   --label "<label>"
 ```
+
+For multi-line Issue bodies, prefer a temporary Markdown file and `--body-file` over shell-escaped
+`--body` strings. This avoids quoting mistakes when the body includes backticks, checkboxes, or code blocks.
 
 ## Recommended Flow
 
