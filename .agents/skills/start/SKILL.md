@@ -44,6 +44,13 @@ Before starting new work, check GitHub Issues, choose the Issue to work on, and 
    gh issue view <number> --repo <owner>/<repo>
    ```
 
+4.5. If the chosen Issue has the `epic` label, do not immediately cut a branch for the Epic by default.
+   - Identify the Epic's domain labels, excluding `epic` itself (for example: `model`, `env`, `poc`, `governance`, `harness`)
+   - List open BOLT Issues with matching domain labels and present them as the preferred work candidates
+   - If no existing BOLT Issue matches the intended work, offer to create a new BOLT Issue before cutting a branch
+   - Cut a branch directly from the Epic only when the intended work is Epic-level organization, documentation, or issue grooming
+   - Confirm the actual target Issue or Epic-level work before continuing to branch creation
+
 5. Cut a branch appropriate to the Issue type
    - Choose the prefix from `docs/conventions.md` by work type
    - Do not use tool-origin prefixes such as `codex/` or `claude/`
