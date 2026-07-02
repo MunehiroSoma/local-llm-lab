@@ -22,7 +22,7 @@ eval = [
     "ragas",
 ]
 tools = [
-    "whichllm",             # モデル自動推薦（uvx whichllm@latest でも可）
+    "whichllm",             # モデル自動推薦（uv.lockで版固定。単体実行時は uvx whichllm==0.5.14）
 ]
 
 [tool.uv]
