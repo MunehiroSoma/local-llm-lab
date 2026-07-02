@@ -7,7 +7,7 @@ FILES=$( { git diff --cached --name-only 2>/dev/null; git ls-files 'datasets/gol
 BAD=$(printf '%s\n' "$FILES" | grep -E '^datasets/golden/' | grep -vE '^datasets/golden/(\.gitignore$|samples/)' || true)
 if [ -n "$BAD" ]; then
   echo "❌ 公開してはいけない golden データが含まれています:"
-  printf '   %s\n' $BAD
+  printf '   %s\n' "$BAD"
   echo "→ datasets/golden/ は samples/ のみ公開。実データは別保管にしてください。"
   exit 1
 fi
