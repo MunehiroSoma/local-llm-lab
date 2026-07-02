@@ -26,6 +26,7 @@ example: /long-run Proceed with #21 performance verification through to completi
 - This skill runs under the assumption of Full Access
 - Continue implementation, verification, and fixes until an explicit stop instruction is given
 - Share progress at each milestone, but in principle do not ask "may I continue?"
+- All user-facing GitHub artifacts created during the run — PR titles/bodies, Issue comments, review summaries, and status comments — must be written in Japanese unless the human explicitly asks for another language.
 - Where judgment calls are needed, err toward the lower-impact option and keep moving forward
 - However, AI-DLC phase transition gates (integration from the coordination branch into `main`, Operations acceptance approval) are out of scope for long-running execution and must always wait for human approval
 

@@ -14,6 +14,8 @@ name: update-skill
 Review the execution of the most recently used skill, identify improvements to its SKILL.md, and update it.
 A skill grows every time it is used.
 
+All user-facing GitHub artifacts created during this skill — PR titles/bodies, Issue comments, review summaries, and status comments — must be written in Japanese unless the human explicitly asks for another language.
+
 ## Usage
 
 ```
