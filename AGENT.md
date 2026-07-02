@@ -1,67 +1,76 @@
-# AGENT.md — local-llm-lab エージェント運用ガイド
+# AGENT.md — local-llm-lab Agent Operating Guide
 
-AIエージェント（Claude Code / Cursor / Copilot 等）が本リポジトリで作業する際の規範。
-人間向けは [README](README.md) / [CONTRIBUTING](CONTRIBUTING.md)、決定は [docs/adr](docs/adr/)、
-詳細規約は [docs/conventions.md](docs/conventions.md)。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this file is written in English.**
 
-## プロジェクト
-自分のハード群（Mac M4 Pro / RTX 5060 Ti / RTX 5070 / DGX Spark）で、ローカルLLM・
-マルチモーダル(omni)推論の「フレームワーク選定 → モデル比較 → PoC → 継続評価」を行うラボ。
-原典: [`docs/research/local-llm-multimodal-study.md`](docs/research/local-llm-multimodal-study.md)。
+Norms for AI agents (Claude Code / Cursor / Copilot, etc.) working in this repository.
+For humans, see [README](README.md) / [CONTRIBUTING](CONTRIBUTING.md); decisions live in [docs/adr](docs/adr/);
+detailed conventions are in [docs/conventions.md](docs/conventions.md).
 
-## 開発方式: AI-DLC（AI駆動開発ライフサイクル）＋ GitHub Flow
-AWS の **AI-DLC** を単独開発向けに軽量化して採用（ADR 0005）。
-中核: **ドキュメント先行・フェーズゲート・人間承認・短いBOLT・ハット(役割)**。
+## Project
+A solo lab running on my own hardware (Mac M4 Pro / RTX 5060 Ti / RTX 5070 / DGX Spark) that does
+"framework selection → model comparison → PoC → ongoing evaluation" for local LLM and multimodal (omni) inference.
+Source material: [`docs/research/local-llm-multimodal-study.md`](docs/research/local-llm-multimodal-study.md).
 
-### 3フェーズ（各遷移に人間承認ゲート）
-| フェーズ | 本ラボでの意味 | 生成物 | ゲート(人間承認) |
+## Development method: AI-DLC (AI-Driven Development Life Cycle) + GitHub Flow
+Adopts AWS's **AI-DLC**, lightened for solo development (ADR 0005).
+Core: **docs-first, phase gates, human approval, short BOLTs, hats (roles)**.
+
+### 3 phases (each transition has a human-approval gate)
+| Phase | Meaning in this lab | Artifacts | Gate (human approval) |
 |---|---|---|---|
-| **Inception**（意図→計画 / Mob Elaboration） | 何を評価/実装するか。モデル追加計画・評価設計 | Issue(model-onboarding) / ADR / research 更新 | **計画Issueを承認してから着手** |
-| **Construction**（設計→実装→テスト） | harness実装・eval設定・実験(BOLT)実行 | `harness/` `envs/` PR / results | **PRレビュー+pre-commit+テスト通過** |
-| **Operations**（運用・継続検証） | サーバ運用(`envs/`/runbooks)・results追記・回帰検知 | `results/` reports / タグ | **結果受け入れ承認 → モデル採用** |
+| **Inception** (intent → plan / Mob Elaboration) | What to evaluate/build. Model-addition plan, eval design | Issue (model-onboarding) / ADR / research update | **Approve the plan Issue before starting** |
+| **Construction** (design → implement → test) | harness implementation, eval config, experiment (BOLT) execution | `harness/` `envs/` PR / results | **PR review + pre-commit + tests passing** |
+| **Operations** (run & keep verifying) | Server ops (`envs/`/runbooks), append to results, regression detection | `results/` reports / tags | **Result acceptance approval → model adoption** |
 
 ### BOLT / Unit of Work
-- 1 BOLT = 短命ブランチ（`exp/*` `model/<id>` `feat/*`）で数時間〜1日。
-- Unit of Work = 「1(モデル×環境×評価)」または「harness の1機能」。
+- 1 BOLT = a short-lived branch (`exp/*` `model/<id>` `feat/*`) lasting hours to a day.
+- Unit of Work = "one (model × environment × eval)" or "one harness feature."
 
-### ハット(役割) = スキル / サブエージェント
-- ai-dev-kit スキル（`.claude/skills/`）: `start` `new-feature` `create-issue` `sync-main` `ship` `review` `test-check` `long-run`。
-- ラボ固有の役割（`.claude/skills/`）: `fit-tester`（レイヤ1 Fit）/ `speed-bencher`（レイヤ2 Speed）/ `eval-author`（レイヤ3-4 標準ベンチ・自前評価）/ `record-results`（Operations・採用判定）。
+### Hats (roles) = skills / subagents
+19 skills live under `.claude/skills/`, grouped into three categories:
 
-## 鉄則（ガードレール）
-1. **人間承認なしにフェーズを進めない**（Inception→Construction→Operations）。
-2. **`datasets/golden/` に実データを入れない**（公開リポ。samples のみ）。
-3. **push / PR / 破壊的操作は人間の指示があるときのみ**。`main` へ直 push しない。
-4. **`results/results.csv` は追記のみ**。judge モデル・ゴールデンセット版は固定。
-5. 決定は ADR に、根拠は `research/` に残す（ドキュメント先行）。
+| Category | Skills |
+|---|---|
+| ai-dev-kit skills (core flow) | `start` `new-feature` `create-issue` `sync-main` `ship` `review` `test-check` `long-run` |
+| Lab-specific hats (roles) | `fit-tester` (Layer 1 Fit) / `speed-bencher` (Layer 2 Speed) / `eval-author` (Layer 3–4 standard benchmarks & custom eval) / `record-results` (Operations, adoption decision) |
+| Governance & distribution | `changelog` `create-readme` `documentation-writer` `git-commit` `refactor` `release-kit` `update-skill` |
 
-## 標準フロー（1 BOLT）
-1. **Inception**: `create-issue` で計画を粒度化 → 人間承認
-2. `new-feature`（`main` からブランチ、model-onboarding なら `fit-tester` → `speed-bencher` → `eval-author` の順で実施）
-3. **Construction**: 実装/実験 → `test-check`
+`review` runs one subagent per viewpoint category (basic quality / error handling / security / test / design consistency / harness-eval-registry) in parallel and aggregates findings (ADR 0006).
+
+## Ironclad rules (guardrails)
+1. **Never advance a phase without human approval** (Inception → Construction → Operations).
+2. **Never put real data in `datasets/golden/`** (public repo; samples only).
+3. **push / PR / destructive operations only on explicit human instruction**. Never push directly to `main`.
+4. **`results/results.csv` is append-only**. Judge model and golden-set version are pinned.
+5. Record decisions in ADRs, rationale in `research/` (docs-first).
+
+## Standard flow (1 BOLT)
+1. **Inception**: break the plan into right-sized pieces with `create-issue` → human approval
+2. `new-feature` (branch from `main`; for model-onboarding, run `fit-tester` → `speed-bencher` → `eval-author` in that order)
+3. **Construction**: implement/experiment → `test-check`
 4. `pre-commit run --all-files`
-5. `ship`（commit[Conventional Commits] → push → PR → 人間承認 → squash merge）→ `review`
-6. **Operations**: `record-results` で `results/` 追記・回帰確認・採用判定（人間承認）
+5. `ship` (commit [Conventional Commits] → push → PR → human approval → squash merge) → `review`
+6. **Operations**: `record-results` — append to `results/`, check for regressions, adoption decision (human approval)
 
-## コマンド
-| 目的 | コマンド |
+## Commands
+| Purpose | Command |
 |---|---|
-| 環境確認 | `bash scripts/check_env.sh` |
-| 候補モデル抽出 | `bash scripts/whichllm_scan.sh <profile>` |
-| 検証 | `make validate` / `pre-commit run --all-files` |
-| ヘルプ | `make help` |
+| Check environment | `bash scripts/check_env.sh` |
+| Extract candidate models | `bash scripts/whichllm_scan.sh <profile>` |
+| Validate | `make validate` / `pre-commit run --all-files` |
+| Help | `make help` |
 
-## ドキュメント体系（テンプレート・規約）
+## Documentation system (templates & conventions)
 
-| 種別 | ファイル |
+| Type | File |
 |---|---|
-| 本ラボ要件定義書 | [`docs/specs/01_要件定義書.md`](docs/specs/01_要件定義書.md) |
-| 汎用テンプレート | [`docs/templates/`](docs/templates/)（01_要件定義書〜06_機能要件定義書・ヒアリングシート） |
-| コードレビューチェックリスト | [`docs/coding-standards/review-checklist.md`](docs/coding-standards/review-checklist.md) |
-| Python コーディング規約 | [`docs/coding-standards/python.md`](docs/coding-standards/python.md) |
+| Lab requirements spec | [`docs/specs/01_要件定義書.md`](docs/specs/01_要件定義書.md) |
+| Generic templates | [`docs/templates/`](docs/templates/) (01_requirements–06_functional-requirements, hearing sheets) |
+| Code review checklist | [`docs/coding-standards/review-checklist.md`](docs/coding-standards/review-checklist.md) |
+| Python coding standard | [`docs/coding-standards/python.md`](docs/coding-standards/python.md) |
 
-PR レビュー時は `review-checklist.md` を参照し、Must が全て ✓ かつ CI green で Approve する。
+At PR review time, consult `review-checklist.md` and approve once all Musts are ✓ and CI is green.
 
-## 参考
+## References
 - AWS AI-DLC: https://aws.amazon.com/blogs/devops/ai-driven-development-life-cycle/
 - awslabs/aidlc-workflows: https://github.com/awslabs/aidlc-workflows ／ https://ai-dlc.dev/
