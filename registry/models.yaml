@@ -52,7 +52,7 @@ models:
   - id: qwen3-coder-30b-a3b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
-    revision: null
+    revision: b2cff646eb4bb1d68355c01b18ae02e7cf42d120
     modality: [text]
     params: 30B
     active_params: 3.3B
@@ -61,7 +61,7 @@ models:
     max_model_len: 262144
     profiles: [coding]
     target_envs: [mac, dgx-spark]
-    notes: "Ollamaコーディング上位。~19GB。"
+    notes: "Ollamaコーディング上位。Mac/Ollama実測は qwen3-coder:30b Q4_K_M。"
 
   - id: qwen3-coder-next-80b-a3b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
