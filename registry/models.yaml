@@ -145,7 +145,33 @@ models:
     target_envs: [dgx-spark]
     notes: "40分超音声/119言語/音声生成。大型omniはDGX。"
 
-  # ---- 要約・タグ付け（構造化出力：3B級は避け7B/8B+）----
+  # ---- 日本語・要約・タグ付け ----
+  - id: lfm2.5-1.2b-jp-202606
+    status: candidate
+    hf_repo: LiquidAI/LFM2.5-1.2B-JP-202606
+    revision: null
+    modality: [text]
+    params: 1.17B
+    quantization: [bf16, q4_k_m, q5_k_m, q6_k, q8_0]
+    runtimes: [mlx, llama.cpp, ollama, vllm, sglang]
+    max_model_len: 32768
+    profiles: [summarize, concierge, coding]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "Liquid AIの日本語特化1.2B級。軽量/省電力/構造化出力/日英アシスタントの第一候補。"
+
+  - id: llm-jp-4-8b-instruct
+    status: candidate
+    hf_repo: llm-jp/llm-jp-4-8b-instruct
+    revision: null
+    modality: [text]
+    params: 8.6B
+    quantization: [bf16, q4_k_m]
+    runtimes: [transformers, vllm, llama.cpp, ollama]
+    max_model_len: 65536
+    profiles: [summarize, concierge, coding]
+    target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
+    notes: "LLM-jp/NIIの日本製8B instruct。日本語baseline。q4_k_mはコミュニティGGUF経路。"
+
   - id: qwen3-8b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: Qwen/Qwen3-8B
