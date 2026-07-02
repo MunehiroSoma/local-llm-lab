@@ -21,7 +21,6 @@ eval = [
                                             # 実行時のバージョン固定は npx promptfoo@<version> を直接使う
                                             # （harness/task/promptfoo/promptfooconfig.example.yaml 参照。CI/CDレビュー資料 C-4）
     "deepeval",
-    "ragas",
 ]
 tools = [
     "whichllm",             # モデル自動推薦（uv.lockで版固定。単体実行時は uvx whichllm==0.5.14）
