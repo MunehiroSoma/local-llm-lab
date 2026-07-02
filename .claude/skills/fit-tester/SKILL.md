@@ -1,53 +1,55 @@
 ---
-description: モデルの実ロード可否（Fit）を検証するラボ固有ハット
+description: Lab-specific hat that verifies whether a model can actually be loaded (Fit)
 name: fit-tester
 ---
 # skill: fit-tester
 
-AGENT.md が定義するラボ固有の役割「fit-tester」。model-onboarding のレイヤ1 **Fit**
-（実ロードで対象 max_model_len において OOM が発生しないか）を検証する。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+The lab-specific role "fit-tester" defined by AGENT.md. Verifies Layer 1 **Fit** of model-onboarding
+(whether an actual load at the target max_model_len causes an OOM).
+
+## Usage
 
 ```
-/fit-tester <model-id> <環境>
-例: /fit-tester gemma4-26b-a4b mac
+/fit-tester <model-id> <environment>
+example: /fit-tester gemma4-26b-a4b mac
 ```
 
-## 前提
+## Prerequisites
 
-- `registry/models.yaml` に対象モデルが revision ピン留め済みで登録されていること
-- `registry/hardware.yaml` に対象環境（mac/rtx-5060ti/rtx-5070/dgx-spark）が定義されていること
-- 作業ブランチは `model/<id>` を使う（`new-feature` スキル参照）
+- The target model must already be registered with a pinned revision in `registry/models.yaml`
+- The target environment (mac/rtx-5060ti/rtx-5070/dgx-spark) must be defined in `registry/hardware.yaml`
+- Use `model/<id>` as the working branch (see the `new-feature` skill)
 
-## 手順
+## Steps
 
-1. `registry/models.yaml` / `registry/hardware.yaml` から対象の設定を確認する
-2. 対象環境の runbook（`docs/runbooks/`）に従って推論サーバを起動する
-3. 目標 max_model_len でモデルを実ロードする
-4. OOM の有無・実際にロードできた max_model_len・使用VRAM/メモリを記録する
-5. 結果を model-onboarding Issue のチェックリストに反映する
-   - `[ ] レイヤ1 Fit` にチェックし、結果メモへ実測値を追記する
-6. Fit が通らない場合、量子化・max_model_len縮小等の代替案を人間に提示する
-7. Fit確認後は `speed-bencher` に引き継ぐことを人間に提案する
+1. Check the target configuration in `registry/models.yaml` / `registry/hardware.yaml`
+2. Start the inference server following the runbook (`docs/runbooks/`) for the target environment
+3. Actually load the model at the target max_model_len
+4. Record whether an OOM occurred, the max_model_len that was actually achievable, and VRAM/memory usage
+5. Reflect the result in the model-onboarding Issue checklist
+   - Check `[ ] Layer 1 Fit` and append the measured values to the result notes
+6. If Fit does not pass, present alternatives to the human (quantization, reducing max_model_len, etc.)
+7. Once Fit is confirmed, propose to the human that the task hand off to `speed-bencher`
 
-## 記録項目（結果メモ）
+## Items to record (result notes)
 
-- 実ロード可否（OK / OOM）
-- 実際の max_model_len
-- 使用VRAM/メモリ（GB）
-- 量子化設定（該当する場合）
+- Whether the actual load succeeded (OK / OOM)
+- The actual max_model_len achieved
+- VRAM/memory used (GB)
+- Quantization settings (if applicable)
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (mandatory)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what went well)
+2. Anything that was hard to use or confusing (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill fit-tester` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: run `/update-skill fit-tester`, present improvement proposals, and apply them after approval
+- No: record the reason for deferring the update in one line, and confirm the conditions for the next review

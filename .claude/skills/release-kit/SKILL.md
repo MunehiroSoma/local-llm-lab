@@ -1,5 +1,5 @@
 ---
-description: スキル/テンプレの改善を公開リポジトリへ反映し、新バージョンとして配布する
+description: Reflect skill/template improvements into the public repository and distribute them as a new version
 metadata:
     github-path: skills/release-kit
     github-ref: refs/heads/main
@@ -9,88 +9,90 @@ name: release-kit
 ---
 # skill: release-kit
 
-`ai-dev-kit` プラグイン（標準スキル・テンプレ集）の改善を、公開している GitHub リポジトリへ
-反映してリリースする。これにより、各プロジェクト・各受講者の環境が
-`/plugin update` で最新スキルを受け取れるようになる。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-> このスキルは `update-skill`（個々のスキルを改善）の後工程。
-> update-skill で磨いた内容を、ここで**配布物として公開**する。
+Reflect improvements to the `ai-dev-kit` plugin (the standard skill/template collection) into the
+public GitHub repository and release them. This allows each project's and each trainee's
+environment to receive the latest skills via `/plugin update`.
 
-## 使い方
+> This skill is the downstream step after `update-skill` (which improves individual skills).
+> It **publishes as a distributable artifact** the content refined via update-skill.
+
+## Usage
 
 ```
-/release-kit <変更概要>
-例: /release-kit ship に worktree 退避手順を追記
+/release-kit <summary of changes>
+example: /release-kit Add worktree evacuation steps to ship
 ```
 
-## 前提
+## Prerequisites
 
-- このリポジトリが `<owner>/<repo>` として GitHub に公開（または共有）済みであること
-- `gh auth status` が通っていること
+- This repository is already published (or shared) on GitHub as `<owner>/<repo>`
+- `gh auth status` passes
 
-## 手順
+## Steps
 
-0. 事前チェック
+0. Pre-check
    ```bash
    gh auth status
-   git status --short        # 反映したい変更が揃っているか確認
+   git status --short        # confirm the changes to be released are all present
    ```
 
-1. マニフェストの妥当性を検証する
+1. Validate the manifest
    ```bash
    claude plugin validate .
    ```
-   - `marketplace.json` とスキル frontmatter のエラーがないことを確認する
+   - Confirm there are no errors in `marketplace.json` or the skill frontmatter
 
-2. バージョンを上げる（必須）
-   - `plugins/ai-dev-kit/.claude-plugin/plugin.json` の `version` を SemVer で上げる
-   - スキル追加 = minor、文言修正 = patch、互換性のない構成変更 = major
-   - ※ `version` を据え置くと、既存ユーザーには更新が届かない
+2. Bump the version (required)
+   - Bump `version` in `plugins/ai-dev-kit/.claude-plugin/plugin.json` using SemVer
+   - Adding a skill = minor, wording fixes = patch, incompatible structural changes = major
+   - Note: leaving `version` unchanged means existing users will not receive the update
 
-3. 変更履歴を残す
-   - `CHANGELOG.md` に `## <version> (YYYY-MM-DD)` 節を追記する
+3. Record the change history
+   - Append a `## <version> (YYYY-MM-DD)` section to `CHANGELOG.md`
 
-4. コミットしてタグを打つ
+4. Commit and tag
    ```bash
    git add -A
-   git commit -m "release: ai-dev-kit v<version> — <変更概要>"
+   git commit -m "release: ai-dev-kit v<version> — <summary of changes>"
    git tag v<version>
    ```
 
-5. push する
+5. Push
    ```bash
    git push origin main
    git push origin v<version>
    ```
 
-6. 受講者・利用者への周知（導入方式に応じて）
-   - `gh skill` で入れている場合:
+6. Notify trainees/users (depending on installation method)
+   - If installed via `gh skill`:
      ```
      gh skill update
      ```
-   - Claude プラグインで入れている場合:
+   - If installed via a Claude plugin:
      ```
      /plugin marketplace update ai-dev-training
      /plugin update ai-dev-kit@ai-dev-training
      /reload-plugins
      ```
 
-## 注意
+## Notes
 
-- `version` は `plugin.json` 側だけで管理する（`marketplace.json` 側には書かない。両方に書くと plugin.json が優先され混乱する）
-- 公開リポジトリへの push は外向きの不可逆操作。push 前に変更内容をユーザーへ提示して承認を得る
-- 秘匿情報（`.env` / 鍵 / 社内固有値）が含まれていないか push 前に必ず確認する
+- Manage `version` only on the `plugin.json` side (do not write it in `marketplace.json` — writing it in both causes confusion, since plugin.json takes precedence)
+- Pushing to the public repository is an outward-facing, irreversible operation. Present the changes to the user and get approval before pushing
+- Always check before pushing that no sensitive information (`.env` / keys / internal-only values) is included
 
-## 実行後の改善確認（必須）
+## Post-execution improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with a human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of difficulty or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill release-kit` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: Run `/update-skill release-kit`, present the improvement proposal, and apply it after approval
+- No: Record the reason for deferring the update in one line, and confirm the conditions for the next review

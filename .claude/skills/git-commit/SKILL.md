@@ -11,6 +11,8 @@ name: git-commit
 ---
 # Git Commit with Conventional Commits
 
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
+
 ## Overview
 
 Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.

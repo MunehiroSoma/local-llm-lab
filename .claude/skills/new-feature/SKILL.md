@@ -1,5 +1,5 @@
 ---
-description: 新しいブランチを main から切って開発を開始する
+description: Start development by cutting a new branch from main
 metadata:
     github-path: skills/new-feature
     github-ref: refs/heads/main
@@ -9,57 +9,59 @@ name: new-feature
 ---
 # skill: new-feature
 
-新しいブランチを main から切って開発を開始する。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Cut a new branch from main and start development.
+
+## Usage
 
 ```
-/new-feature <prefix>/<ブランチ名>
-例: /new-feature feat/eval-runner
-例: /new-feature exp/gemma4-mac-swebench
-例: /new-feature model/gemma4-26b-a4b
+/new-feature <prefix>/<branch-name>
+example: /new-feature feat/eval-runner
+example: /new-feature exp/gemma4-mac-swebench
+example: /new-feature model/gemma4-26b-a4b
 ```
 
-## 手順
+## Steps
 
-1. main を最新に更新する
+1. Update main to the latest state
    ```bash
    git checkout main
    git pull origin main
    ```
 
-2. ブランチを作成して移動する
+2. Create the branch and switch to it
    ```bash
-   git checkout -b <prefix>/<ブランチ名>
+   git checkout -b <prefix>/<branch-name>
    ```
 
-3. ブランチ名・目的をユーザーに確認して開発を開始する
+3. Confirm the branch name and purpose with the user, then start development
 
-## ブランチ命名規則（本リポジトリ = conventions.md 準拠）
+## Branch naming convention (this repo, per conventions.md)
 
-| プレフィックス | 用途 | 例 |
+| Prefix | Purpose | Example |
 |---|---|---|
-| `feat/` | harness等の機能 | `feat/eval-runner` |
-| `fix/` | 修正 | `fix/login-retry` |
-| `exp/` | 計測ラン・実験（BOLT） | `exp/gemma4-mac-swebench` |
-| `model/<id>` | モデル追加・検証（BOLT） | `model/gemma4-26b-a4b` |
-| `env/` | 環境構築（runbook/compose） | `env/dgx-spark-vllm` |
-| `docs/` | 資料 | `docs/api-reference` |
-| `chore/` | 雑務・設定 | `chore/update-deps` |
+| `feat/` | Features (e.g. harness) | `feat/eval-runner` |
+| `fix/` | Fixes | `fix/login-retry` |
+| `exp/` | Measurement runs / experiments (BOLT) | `exp/gemma4-mac-swebench` |
+| `model/<id>` | Model addition / validation (BOLT) | `model/gemma4-26b-a4b` |
+| `env/` | Environment setup (runbook/compose) | `env/dgx-spark-vllm` |
+| `docs/` | Documentation | `docs/api-reference` |
+| `chore/` | Chores / config | `chore/update-deps` |
 
-- すべて英小文字・ハイフン区切り。日本語・スペース・アンダースコア禁止。
-- BOLT（Unit of Work = モデル×環境×評価、または harness の1機能）は `exp/*` `model/<id>` を優先して使う。
+- All lowercase, hyphen-separated. No Japanese text, spaces, or underscores.
+- For a BOLT (Unit of Work = model x environment x evaluation, or a single harness feature), prefer `exp/*` or `model/<id>`.
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of the skill run, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of friction or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill new-feature` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: run `/update-skill new-feature`, present the improvement proposal, and apply it once approved
+- No: record the reason for not updating in one line, and confirm the conditions for the next review

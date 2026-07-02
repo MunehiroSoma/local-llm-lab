@@ -14,6 +14,8 @@ targets:
     - claude
     - codex
 ---
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
+
 Generate a CHANGELOG.md entry for a release. $ARGUMENTS specifies the tag version (e.g., `v0.16.0`) or omit to auto-detect via `git describe --tags --abbrev=0`.
 
 **Scope**: This skill updates `CHANGELOG.md` and syncs the website changelog (`website/src/pages/changelog.md`). It does NOT write code (use `implement-feature`) or update docs (use `update-docs`).

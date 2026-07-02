@@ -1,5 +1,5 @@
 ---
-description: 長時間作業を中断せず、自走専用ブランチで継続し最後に main へ統合する
+description: Continue long-running work without interruption on a dedicated autopilot branch, integrating into main at the end
 metadata:
     github-path: skills/long-run
     github-ref: refs/heads/main
@@ -9,80 +9,82 @@ name: long-run
 ---
 # skill: long-run
 
-長時間の実装・調査タスクを、不要な確認待ちを挟まずに継続実行する。
-作業は `main` 直下で行わず、自走専用ブランチを親にして進める。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Continue long-running implementation/investigation tasks without unnecessary confirmation pauses.
+Do not work directly on `main` — proceed with a dedicated autopilot branch as the parent.
+
+## Usage
 
 ```
-/long-run <作業内容>
-例: /long-run #21 パフォーマンス検証を最後まで進める
+/long-run <task description>
+example: /long-run Proceed with #21 performance verification through to completion
 ```
 
-## 実行前提
+## Execution prerequisites
 
-- このスキルは Full Access 前提で実行する
-- 明示的な停止指示があるまで、実装・検証・修正を継続する
-- マイルストーンごとに進捗は共有するが、「続けてよいか」の確認は原則しない
-- 判断が必要な箇所は、影響が小さい側に倒して前進する
-- ただし AI-DLC のフェーズ遷移ゲート（`autopilot/<topic>` → `main` への統合、Operations 受け入れ承認）は自走の対象外とし、必ず人間承認を待つ
+- This skill runs under the assumption of Full Access
+- Continue implementation, verification, and fixes until an explicit stop instruction is given
+- Share progress at each milestone, but in principle do not ask "may I continue?"
+- Where judgment calls are needed, err toward the lower-impact option and keep moving forward
+- However, AI-DLC phase transition gates (integration from `autopilot/<topic>` into `main`, Operations acceptance approval) are out of scope for autopilot and must always wait for human approval
 
-## ブランチ運用（必須）
+## Branch operations (required)
 
-1. `main` から自走専用の親ブランチを作る
+1. Create a dedicated autopilot parent branch from `main`
    ```bash
    git checkout main
    git pull origin main
    git checkout -b autopilot/<topic>
    ```
-2. 各実装は親ブランチから子ブランチを切って進める（プレフィックスは conventions.md 準拠 = `feat/` `fix/` `exp/` `model/<id>` `env/` `docs/` `chore/`）
+2. Cut a child branch from the parent branch for each implementation (prefixes follow conventions.md = `feat/` `fix/` `exp/` `model/<id>` `env/` `docs/` `chore/`)
    ```bash
    git checkout autopilot/<topic>
    git checkout -b feat/<task-slug>
    ```
-3. 子ブランチで実装・検証後、親ブランチへマージする
+3. After implementing and verifying on the child branch, merge into the parent branch
    ```bash
    git checkout autopilot/<topic>
    git merge --no-ff feat/<task-slug>
    ```
-4. すべて完了したら `autopilot/<topic>` から `main` へ PR を作る。**マージは人間承認後に squash で行う**（自走の対象外）
-5. 作業途中の子ブランチは `main` に直接 PR しない
+4. Once everything is complete, create a PR from `autopilot/<topic>` to `main`. **Merge only after human approval, via squash** (out of scope for autopilot)
+5. Do not open PRs directly to `main` from in-progress child branches
 
-## 実行手順
+## Execution steps
 
-0. 目的と完了条件を 1〜3 行で再確認する
-1. 自走専用親ブランチ `autopilot/<topic>` を用意する
-2. 影響範囲を調査し、子ブランチを切って最短で価値が出る順に実装する
-3. 実装したら `<PRECOMMIT_CMD>` と必要テストを実行する
-4. 失敗時は自己修正して再実行し、通るまで繰り返す
-5. 子ブランチを親へ順次マージし、最後に親から `main` へ PR を作成する
-6. 完了条件を満たしたら結果・未解決事項・次の推奨アクションを報告する
+0. Reconfirm the objective and completion criteria in 1-3 lines
+1. Prepare the dedicated autopilot parent branch `autopilot/<topic>`
+2. Investigate the impact scope, cut child branches, and implement in the order that delivers value fastest
+3. After implementing, run `<PRECOMMIT_CMD>` and any required tests
+4. On failure, self-correct and re-run, repeating until it passes
+5. Merge child branches into the parent sequentially, then finally create a PR from the parent to `main`
+6. Once the completion criteria are met, report the results, unresolved items, and recommended next actions
 
-## デフォルト前提
+## Default assumptions
 
-- 変更は最小差分で行い、不要なリファクタは混ぜない
-- 関連テストを優先し、必要に応じて範囲を広げる
+- Keep changes to a minimal diff; do not mix in unnecessary refactoring
+- Prioritize related tests, expanding scope as needed
 
-## 通知（任意）
+## Notifications (optional)
 
-- 長時間タスクでは開始/中間/ブロック/完了を Discord 等に通知すると追跡しやすい
-- 推奨イベント: `start` / `checkpoint` / `blocked` / `done`
+- For long-running tasks, notifying start/interim/blocked/done to Discord etc. makes tracking easier
+- Recommended events: `start` / `checkpoint` / `blocked` / `done`
 
-## ブロック時の動き
+## Behavior when blocked
 
-- 10 分以上進捗が止まる場合は、代替案で前進できる道を先に試す
-- それでも解消しない場合のみ、質問は 1 回・短文で行う
+- If progress stalls for more than 10 minutes, first try an alternative path forward
+- Only if that still doesn't resolve it, ask a single short question
 
-## 実行後の改善確認（必須）
+## Post-execution improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with a human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of difficulty or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill long-run` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: Run `/update-skill long-run`, present the improvement proposal, and apply it after approval
+- No: Record the reason for deferring the update in one line, and confirm the conditions for the next review

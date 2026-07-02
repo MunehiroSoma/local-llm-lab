@@ -1,5 +1,5 @@
 ---
-description: GitHub Issue を正しい粒度・構造で登録する
+description: Register GitHub Issues with correct granularity and structure
 metadata:
     github-path: skills/create-issue
     github-ref: refs/heads/main
@@ -9,99 +9,101 @@ name: create-issue
 ---
 # skill: create-issue
 
-GitHub Issue を正しい粒度・構造で登録する。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Register GitHub Issues with correct granularity and structure.
+
+## Usage
 
 ```
 /create-issue
 ```
 
-## Issue の種別と使い分け
+## Issue Types and When to Use Them
 
-| 種別 | いつ使うか | Label（例） |
+| Type | When to use | Label (example) |
 |---|---|---|
-| **Task Issue** | 実装タスク単位（1〜3 日で完了する粒度） | フェーズ/種別ラベル |
-| **Bug Issue** | コード上の不具合を発見したとき | `bug` + `priority:S/A/B` |
-| **Epic Issue** | 複数 Task をまとめる親 Issue | `epic` |
+| **Task Issue** | Per implementation task (granularity completable in 1-3 days) | Phase/type label |
+| **Bug Issue** | When a defect in the code is found | `bug` + `priority:S/A/B` |
+| **Epic Issue** | Parent issue grouping multiple Tasks | `epic` |
 
-## 登録前レビュー（必須）
+## Pre-Registration Review (Required)
 
-`gh issue create` を実行する前に、必ず人間へ次を提示してレビューを受ける。
+Before running `gh issue create`, always present the following to a human for review.
 
-1. 作成予定タイトル
-2. 付与予定ラベル
-3. Issue 本文ドラフト（チェックリスト・完了条件を含む）
+1. Planned title
+2. Planned labels
+3. Issue body draft (including checklist and completion criteria)
 
-- 人間の `OK` が出るまで Issue を作成しない
-- 修正依頼があれば反映後に再提示し、承認後に作成する
+- Do not create the Issue until the human gives `OK`
+- If revision is requested, reflect it, re-present, and only create after approval
 
 ---
 
-## Task Issue テンプレート
+## Task Issue Template
 
 ```
-タイトル: [<番号>] <タスク名>
+Title: [<number>] <task name>
 
-## 親 Issue
-#<番号> <親タスク名>
+## Parent Issue
+#<number> <parent task name>
 
-## タスク
-- [ ] タスク1
-- [ ] タスク2
+## Tasks
+- [ ] Task 1
+- [ ] Task 2
 
-## 完了条件
-<具体的な動作確認方法>
+## Completion Criteria
+<specific verification method>
 ```
 
-## Bug Issue テンプレート
+## Bug Issue Template
 
 ```
-タイトル: [Bug] <問題の概要>
+Title: [Bug] <problem summary>
 
-## 概要
-<何が問題か・影響範囲>
+## Summary
+<what is the problem / scope of impact>
 
-## 問題箇所
-`<ファイルパス>` L<行番号>
+## Problem Location
+`<file path>` L<line number>
 
-## 再現手順
+## Steps to Reproduce
 1. ...
 
-## 期待する動作
+## Expected Behavior
 ...
 
-## 関連
+## Related
 - #XX
 ```
 
-## gh コマンド例
+## Example gh Command
 
 ```bash
 gh issue create --repo <owner>/<repo> \
-  --title "[<番号>] <タイトル>" \
+  --title "[<number>] <title>" \
   --body "..." \
   --label "<label>"
 ```
 
-## 推奨フロー
+## Recommended Flow
 
-1. 既存 Issue を確認して重複を回避する
-2. 作成する Issue の粒度を決める（必要なら複数に分割）
-3. 作成予定のタイトル・ラベル・本文ドラフトを人間へ提示する
-4. 人間のレビュー反映後、`gh issue create` を実行する
-5. 作成結果 URL を共有する
+1. Check existing Issues to avoid duplicates
+2. Decide the granularity of the Issue to create (split into multiple if needed)
+3. Present the planned title, labels, and body draft to the human
+4. After reflecting the human's review, run `gh issue create`
+5. Share the resulting URL
 
-## 実行後の改善確認（必須）
+## Post-Execution Improvement Check (Required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of the skill execution, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this session went (what went well)
+2. Points that were hard to use / caused hesitation (usability)
+3. Improvement suggestions from the agent (procedure / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition Rules
 
-- Yes: `/update-skill create-issue` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: Run `/update-skill create-issue`, present the improvement proposal, and reflect it after approval
+- No: Record the reason for deferring the update in one line, and confirm the condition for the next review

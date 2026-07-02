@@ -1,5 +1,5 @@
 ---
-description: 観点カテゴリごとにサブエージェントを並列起動し、指摘を集約してレビューする（ADR 0006）
+description: Runs viewpoint-scoped subagents in parallel and aggregates findings for review (ADR 0006)
 metadata:
     github-path: skills/review
     github-ref: refs/heads/main
@@ -9,83 +9,81 @@ name: review
 ---
 # skill: review
 
-`docs/coding-standards/review-checklist.md` の観点カテゴリごとにサブエージェントを並列起動し、
-指摘を集約するレビュースキル（ADR 0006 の観点分割方針を反映）。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Runs one subagent per viewpoint category from `docs/coding-standards/review-checklist.md` in parallel and aggregates the findings (reflects the ADR 0006 viewpoint-split policy).
+
+## Usage
 
 ```
-/review <対象機能名 or ファイルパス>
-例: /review EventService
-例: /review app/core/event_generation.py
+/review <target feature name or file path>
+e.g. /review EventService
+e.g. /review app/core/event_generation.py
 ```
 
-## 実行タイミング
+## When to run
 
-- **PR作成時（`ship` 実行後、人間承認前）のみ**に実行する。
-- push のたびには実行しない（機械的チェックは既存の pre-commit / CI ruff・mypy で代替済みのため）。
+- Run **only at PR creation time** (after `ship`, before human approval).
+- Do not run on every push (mechanical checks are already covered by pre-commit / CI ruff & mypy).
 
-## 観点特化サブエージェントの起動
+## Launching viewpoint-scoped subagents
 
-`docs/coding-standards/review-checklist.md` の観点カテゴリに対応する Explore 系サブエージェントを
-並列起動する。各エージェントは自分の観点のチェックリストファイルのみを読み、担当外のファイルは読まない。
+Launch one Explore-type subagent per viewpoint category in `docs/coding-standards/review-checklist.md`, in parallel. Each subagent reads only its own viewpoint's checklist file and does not read files owned by other viewpoints.
 
-| 観点 | チェックリスト | 入力範囲 | 想定モデル |
+| Viewpoint | Checklist | Input scope | Target model |
 |---|---|---|---|
-| 基本品質 | `docs/coding-standards/review-checklist/01-basic-quality.md` | 差分のみ | 軽量 |
-| エラー処理 | `docs/coding-standards/review-checklist/02-error-handling.md` | 差分のみ | 軽量 |
-| セキュリティ | `docs/coding-standards/review-checklist/03-security.md` | 差分のみ | 上位 |
-| テスト | `docs/coding-standards/review-checklist/04-test.md` | 差分のみ | 軽量〜中位 |
-| 設計整合性 | `docs/coding-standards/review-checklist/05-design-consistency.md` | 差分 + ADR/研究ノート | 上位 |
-| harness-eval-registry | `docs/coding-standards/review-checklist/06-harness-eval-registry.md` | 差分のみ（registry変更時はADRも） | 上位 |
+| Basic quality | `docs/coding-standards/review-checklist/01-basic-quality.md` | Diff only | Lightweight |
+| Error handling | `docs/coding-standards/review-checklist/02-error-handling.md` | Diff only | Lightweight |
+| Security | `docs/coding-standards/review-checklist/03-security.md` | Diff only | Higher-tier |
+| Test | `docs/coding-standards/review-checklist/04-test.md` | Diff only | Lightweight to mid-tier |
+| Design consistency | `docs/coding-standards/review-checklist/05-design-consistency.md` | Diff + ADRs / research notes | Higher-tier |
+| harness-eval-registry | `docs/coding-standards/review-checklist/06-harness-eval-registry.md` | Diff only (ADRs too if `registry` changes) | Higher-tier |
 
-- **モデル適材適所**: 規約・フォーマット系の機械的チェック（命名・import整理・禁止パターン検出等）は軽量モデル、
-  設計判断・harnessロジック・アーキテクチャ整合性の判断が必要な観点は上位モデルで起動する。
-- **起動規模の可変**: 変更差分が小さい（目安: 5ファイル未満）場合は主要観点（基本品質・エラー処理・テスト）のみ、
-  model-onboarding や大規模harness変更等は全観点を起動する。
+- **Right model for the job**: use a lightweight model for mechanical, convention/format checks (naming, import ordering, forbidden-pattern detection); use a higher-tier model for viewpoints requiring design judgment, harness logic, or architectural consistency.
+- **Scale the launch to the change size**: for small diffs (rule of thumb: fewer than 5 files), launch only the main viewpoints (basic quality, error handling, test); for model-onboarding or large harness changes, launch all viewpoints.
 
-## 観点特化サブエージェントのノイズ抑制ルール（必須遵守）
+## Noise-suppression rules for viewpoint-scoped subagents (mandatory)
 
-- 良い点の指摘をしない（指摘のみに集中する）
-- 修正案の提案はしない（修正は実装者/別スキルの責務）
-- YAGNI違反（過剰設計）の指摘はしない
-- 差分に含まれない既存実装への指摘はしない
-- 観点ごとに入力範囲を絞る（担当外の観点のファイル・チェックリストは読まない）
+- Do not point out things that are good (findings only)
+- Do not propose fixes (fixing is the implementer's/another skill's responsibility)
+- Do not flag YAGNI violations (over-engineering)
+- Do not flag existing code that is not part of the diff
+- Keep each viewpoint's input scope narrow (do not read files/checklists owned by other viewpoints)
 
-## 権限方針
+## Permission policy
 
-観点特化サブエージェントには **Read/Grep/Glob 相当の読み取り専用権限のみ**を与える。書き込みはさせない。
+Viewpoint-scoped subagents get **read-only permissions equivalent to Read/Grep/Glob only**. No write access.
 
-## 出力形式
+## Output format
 
-観点特化サブエージェントの出力は次の形式に統一する。
+Viewpoint-scoped subagents must standardize their output to:
 
 ```
-SEVERITY(Must/Should/Nits) / FILE / LINE / ISSUE / 観点
+SEVERITY(Must/Should/Nits) / FILE / LINE / ISSUE / viewpoint
 ```
 
-例:
+Example:
 
 ```
-Must / app/core/event_generation.py / 42 / 例外を握りつぶしている（空のexcept） / エラー処理
-Should / app/api/event.py / 10 / タイムアウト未設定 / セキュリティ
-Nits / tests/test_event.py / 5 / テスト名が命名規約に沿っていない / テスト
+Must / app/core/event_generation.py / 42 / Exception swallowed (empty except) / Error handling
+Should / app/api/event.py / 10 / Missing timeout / Security
+Nits / tests/test_event.py / 5 / Test name doesn't follow naming convention / Test
 ```
 
-`review` スキル本体は各エージェントの出力を集約し、重複を排除してから提示する。
+The `review` skill itself aggregates each subagent's output, dedupes, then presents the result.
 
-> 言語固有の規約レビューが必要な場合は、別途 `py-review` 等の言語別スキルを併用する。
+> If a language-specific convention review is also needed, combine with a separate language-specific skill such as `py-review`.
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (mandatory)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of the skill run, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of this run (what went well)
+2. Anything awkward or confusing (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rule
 
-- Yes: `/update-skill review` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: run `/update-skill review`, propose improvements, and apply them after approval
+- No: record the reason for skipping the update in one line, and confirm the condition for revisiting it next time

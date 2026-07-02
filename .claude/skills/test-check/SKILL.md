@@ -1,5 +1,5 @@
 ---
-description: 実装完了判定チェックリストを実行し、テスト記録テンプレートを提供する
+description: Run the implementation-complete verdict checklist and provide a test record template
 metadata:
     github-path: skills/test-check
     github-ref: refs/heads/main
@@ -9,85 +9,87 @@ name: test-check
 ---
 # skill: test-check
 
-実装完了判定チェックリストを実行する。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Run the implementation-complete verdict checklist.
+
+## Usage
 
 ```
-/test-check <対象機能名>
-例: /test-check EventService
+/test-check <target feature name>
+example: /test-check EventService
 ```
 
-## 実装完了の定義
+## Definition of implementation complete
 
-以下をすべて満たすまで「完了」としない。
+Do not mark it "complete" until all of the following are satisfied.
 
-- [ ] `<TEST_CMD>` が通過する
-- [ ] `<LINT_CMD>` エラーなし
-- [ ] `<FORMAT_CMD>` で差分なし
-- [ ] 正常系が確認されている
-- [ ] 異常系が確認されている（不正入力・外部 API エラー）
-- [ ] ログで問題を切り分け可能である
-- [ ] 確認結果の記録（`docs/` 配下のテスト記録）
+- [ ] `<TEST_CMD>` passes
+- [ ] `<LINT_CMD>` has no errors
+- [ ] `<FORMAT_CMD>` shows no diff
+- [ ] The happy path has been verified
+- [ ] The error path has been verified (invalid input, external API errors)
+- [ ] Issues can be isolated via logs
+- [ ] Verification results are recorded (test records under `docs/`)
 
-## 正常系の最低確認項目
+## Minimum checks for the happy path
 
-- [ ] 期待通りの出力が返る
-- [ ] DB にレコードが保存される（DB 操作がある場合）
-- [ ] ファイルが保存される（ファイル出力がある場合）
+- [ ] The expected output is returned
+- [ ] The record is saved to the DB (if DB operations are involved)
+- [ ] The file is saved (if file output is involved)
 
-## 異常系の最低確認項目
+## Minimum checks for the error path
 
-- [ ] 不正入力で適切なエラーが返る
-- [ ] 外部 API 障害時に適切にフォールバック／エラーが返る
-- [ ] エラーログに技術的な詳細が残る
+- [ ] Invalid input returns an appropriate error
+- [ ] On external API failure, an appropriate fallback/error is returned
+- [ ] Technical details are retained in the error log
 
-## モデル・オンボーディング（harness/eval作業）向け完了条件
+## Completion criteria for model onboarding (harness/eval work)
 
-`model-onboarding` Issue や `exp/*` `model/<id>` ブランチの作業では、上記に加えて以下を満たすまで「完了」としない（research §13.5 / §12.4）。
+For `model-onboarding` issues and work on `exp/*` / `model/<id>` branches, do not mark it "complete" until the following are satisfied in addition to the above (research §13.5 / §12.4).
 
-- [ ] レイヤ1 **Fit**: 実ロードでOOMが発生しない（対象 max_model_len）
-- [ ] レイヤ2 **Speed**: tok/s・TTFT・(MM時)前処理時間を計測済み
-- [ ] レイヤ3 **標準ベンチ**: 用途別の足切りベンチ（SWE-bench/Aider/MMMU/llm-jp-eval等）を実施
-- [ ] レイヤ4 **自前タスク評価**: promptfoo/DeepEval（日本語含む）を実施
-- [ ] `results/results.csv` に1行追記済み（追記のみ、既存行の書き換え禁止）
-- [ ] 判定（採用 / 保留 / 不採用）と理由を記録済み
-- [ ] Operations フェーズの受け入れ承認（人間）が済んでいる
+- [ ] Layer 1 **Fit**: No OOM occurs under an actual load (for the target max_model_len)
+- [ ] Layer 2 **Speed**: tok/s, TTFT, and (for MM) preprocessing time have been measured
+- [ ] Layer 3 **Standard benchmarks**: Use-case-specific screening benchmarks have been run (SWE-bench/Aider/MMMU/llm-jp-eval, etc.)
+- [ ] Layer 4 **Custom task evaluation**: promptfoo/DeepEval (including Japanese) have been run
+- [ ] One line has been appended to `results/results.csv` (append only; do not rewrite existing rows)
+- [ ] The verdict (adopt / hold / reject) and its rationale have been recorded
+- [ ] Operations phase acceptance approval (human) has been obtained
 
-## テストケース記録テンプレート
+## Test case record template
 
-`docs/<カテゴリ>/TC_<機能名>.md` に以下の形式で記録する。
+Record in `docs/<category>/TC_<feature-name>.md` using the following format.
 
 ```markdown
-# TC_<機能名>
+# TC_<feature name>
 
-## 実施情報
-- 実施日: YYYY-MM-DD
-- 実施者: <名前>
+## Execution info
+- Date: YYYY-MM-DD
+- Performed by: <name>
 
-## 正常系
-- （確認内容）
+## Happy path
+- (what was verified)
 
-## 異常系
-- （確認内容）
+## Error path
+- (what was verified)
 
-## 未確認
-- （未確認項目）
+## Unverified
+- (unverified items)
 
-## 備考
-- （特記事項）
+## Notes
+- (additional remarks)
 ```
 
-## 実行後の改善確認（必須）
+## Post-execution improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with a human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of difficulty or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill test-check` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: Run `/update-skill test-check`, present the improvement proposal, and apply it after approval
+- No: Record the reason for deferring the update in one line, and confirm the conditions for the next review

@@ -1,54 +1,56 @@
 ---
-description: モデルの速度（tok/s・TTFT等）を計測するラボ固有ハット
+description: Lab-specific hat that measures model speed (tok/s, TTFT, etc.)
 name: speed-bencher
 ---
 # skill: speed-bencher
 
-AGENT.md が定義するラボ固有の役割「speed-bencher」。model-onboarding のレイヤ2 **Speed**
-（単発 tok/s・TTFT・(マルチモーダル時)前処理時間）を計測する。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+The lab-specific role "speed-bencher" defined by AGENT.md. Measures Layer 2 **Speed** of model-onboarding
+(single-shot tok/s, TTFT, and, for multimodal cases, preprocessing time).
+
+## Usage
 
 ```
-/speed-bencher <model-id> <環境>
-例: /speed-bencher gemma4-26b-a4b rtx-5070
+/speed-bencher <model-id> <environment>
+example: /speed-bencher gemma4-26b-a4b rtx-5070
 ```
 
-## 前提
+## Prerequisites
 
-- レイヤ1 Fit（`fit-tester`）が完了し、実ロード可能な設定が確定していること
-- 作業ブランチは `exp/*` または `model/<id>` を使う
+- Layer 1 Fit (`fit-tester`) must be complete, with a confirmed loadable configuration
+- Use `exp/*` or `model/<id>` as the working branch
 
-## 手順
+## Steps
 
-1. Fit確認済みの設定（max_model_len・量子化）でサーバを起動する
-2. 単発推論で以下を計測する
-   - tok/s（生成速度）
-   - TTFT（Time To First Token）
-   - マルチモーダル入力がある場合は前処理時間（画像/音声のエンコード時間）
-3. 複数回計測し、ばらつき（min/max/median）を確認する
-4. 結果を model-onboarding Issue のチェックリストに反映する
-   - `[ ] レイヤ2 Speed` にチェックし、結果メモへ実測値を追記する
-5. 生ログを `results/raw/` に保存する
-6. 計測完了後は `eval-author` （標準ベンチ・自前タスク評価）に引き継ぐことを人間に提案する
+1. Start the server with the Fit-confirmed configuration (max_model_len, quantization)
+2. Measure the following with single-shot inference
+   - tok/s (generation speed)
+   - TTFT (Time To First Token)
+   - If there is multimodal input, preprocessing time (image/audio encoding time)
+3. Measure multiple times and check the variance (min/max/median)
+4. Reflect the result in the model-onboarding Issue checklist
+   - Check `[ ] Layer 2 Speed` and append the measured values to the result notes
+5. Save the raw logs to `results/raw/`
+6. Once measurement is complete, propose to the human that the task hand off to `eval-author` (standard benchmarks / custom task evaluation)
 
-## 記録項目（結果メモ）
+## Items to record (result notes)
 
-- tok/s（median、min-max）
-- TTFT（median、min-max）
-- 前処理時間（該当する場合）
-- 計測条件（プロンプト長・出力長・バッチサイズ）
+- tok/s (median, min-max)
+- TTFT (median, min-max)
+- Preprocessing time (if applicable)
+- Measurement conditions (prompt length, output length, batch size)
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (mandatory)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what went well)
+2. Anything that was hard to use or confusing (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill speed-bencher` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: run `/update-skill speed-bencher`, present improvement proposals, and apply them after approval
+- No: record the reason for deferring the update in one line, and confirm the conditions for the next review

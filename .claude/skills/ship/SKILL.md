@@ -1,5 +1,5 @@
 ---
-description: 現在のブランチの変更をコミット → push → PR 作成まで一括で行う
+description: Commit the changes on the current branch, push, and create a PR, all in one flow
 metadata:
     github-path: skills/ship
     github-ref: refs/heads/main
@@ -9,96 +9,98 @@ name: ship
 ---
 # skill: ship
 
-現在のブランチの変更をコミット → push → PR 作成まで一括で行う。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-> 本リポジトリの `<MERGE_STYLE>` = **squash**（conventions.md 準拠、固定）。
-> マージは AI-DLC の Construction フェーズ完了ゲート（PRレビュー承認）を経てから行う。
+Commit the changes on the current branch, push, and create a PR, all in one flow.
 
-## 使い方
+> This repository's `<MERGE_STYLE>` = **squash** (per conventions.md, fixed).
+> Merge only after passing through the AI-DLC Construction phase completion gate (PR review approval).
+
+## Usage
 
 ```
-/ship <コミットメッセージ>
-例: /ship feat: DBスキーマとマイグレーション実装
+/ship <commit message>
+example: /ship feat: implement DB schema and migration
 ```
 
-## 手順
+## Steps
 
-0. 作業ツリーの汚れを確認する
+0. Check for a dirty working tree
    ```bash
    git status --short
    ```
-   - 対象 Issue と無関係な変更がある場合は、そのまま push/PR しない
-   - dirty の場合は一時 worktree で隔離するか `git stash` で退避する
-   - 変更破棄（`git restore` など）はユーザー確認なしで実行しない
+   - If there are changes unrelated to the target issue, do not push/PR as-is
+   - If dirty, isolate in a temporary worktree or evacuate via `git stash`
+   - Do not discard changes (e.g. `git restore`) without user confirmation
 
-1. 変更ファイルと検証を確認する
+1. Check the changed files and verification
    ```bash
    git status
    git diff --stat
-   <PRECOMMIT_CMD>   # または <LINT_CMD> / <FORMAT_CMD>
+   <PRECOMMIT_CMD>   # or <LINT_CMD> / <FORMAT_CMD>
    ```
 
-2. ステージングとコミット
+2. Stage and commit
    ```bash
-   git add <関連ファイル>
-   git commit -m "<type>: <概要>"
+   git add <relevant files>
+   git commit -m "<type>: <summary>"
    ```
 
-3. push する
+3. Push
    ```bash
    git push origin <current-branch>
    ```
 
-4. PR を作成する（関連 Issue があれば `Closes #XX` を含め、なければ `N/A` を明記）
+4. Create a PR (include `Closes #XX` if there is a related issue; otherwise state `N/A` explicitly)
    ```bash
-   gh pr create --title "<type>: <概要>" --body "## 概要
-   <変更内容>
+   gh pr create --title "<type>: <summary>" --body "## Summary
+   <description of changes>
 
-   ## 関連 Issue
-   Closes #<番号>   # なければ N/A
+   ## Related issue
+   Closes #<number>   # N/A if none
 
-   ## 確認事項
-   - [ ] 正常系確認
-   - [ ] 異常系確認
-   - [ ] テスト追加（該当時）
-   - [ ] 検証コマンド通過"
+   ## Checklist
+   - [ ] Happy path verified
+   - [ ] Error path verified
+   - [ ] Tests added (if applicable)
+   - [ ] Verification commands pass"
    ```
 
-5. **人間承認ゲート（必須・省略不可）**
-   - PR URL を人間へ提示し、レビュー結果（マージしてよいか）を待つ
-   - AI-DLC の Construction フェーズ遷移ゲートに相当するため、承認が出るまで手順6へ進まない
+5. **Human approval gate (required, cannot be skipped)**
+   - Present the PR URL to a human and wait for the review outcome (whether it's OK to merge)
+   - This corresponds to the AI-DLC Construction phase transition gate, so do not proceed to step 6 until approval is given
 
-6. マージと後処理（承認後のみ実行）
+6. Merge and post-processing (only after approval)
    ```bash
-   gh pr merge <PR番号> --squash --delete-branch
+   gh pr merge <PR number> --squash --delete-branch
    git checkout main
    git pull origin main
    ```
 
-- 方針: 統合後は不要ブランチを削除して `main` に戻った状態を作業の終了条件にする
-- マージ方式は本リポジトリの規約（conventions.md）に従い **squash 固定**
+- Policy: after integration, delete unneeded branches and treat returning to `main` as the end condition for the work
+- The merge method follows this repository's convention (conventions.md): **squash, fixed**
 
-## コミットメッセージ規則
+## Commit message rules
 
-| type | 意味 |
+| type | meaning |
 |---|---|
-| `feat` | 新機能 |
-| `fix` | バグ修正 |
-| `docs` | ドキュメント |
-| `refactor` | リファクタリング |
-| `chore` | 設定変更 |
-| `test` | テスト追加・修正 |
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation |
+| `refactor` | Refactoring |
+| `chore` | Configuration change |
+| `test` | Test addition/modification |
 
-## 実行後の改善確認（必須）
+## Post-execution improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of skill execution, always confirm the following with a human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of difficulty or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill ship` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: Run `/update-skill ship`, present the improvement proposal, and apply it after approval
+- No: Record the reason for deferring the update in one line, and confirm the conditions for the next review

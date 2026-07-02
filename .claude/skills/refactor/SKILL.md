@@ -10,6 +10,8 @@ name: refactor
 ---
 # Refactor
 
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
+
 ## Overview
 
 Improve code structure and readability without changing external behavior. Refactoring is gradual evolution, not revolution. Use this for improving existing code, not rewriting from scratch.

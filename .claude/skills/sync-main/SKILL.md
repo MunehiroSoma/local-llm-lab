@@ -1,5 +1,5 @@
 ---
-description: main を最新に同期し、現在のブランチをリベースする
+description: Sync main to the latest state and rebase the current branch
 metadata:
     github-path: skills/sync-main
     github-ref: refs/heads/main
@@ -9,51 +9,53 @@ name: sync-main
 ---
 # skill: sync-main
 
-main を最新に同期し、現在のブランチをリベースする。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Sync main to the latest state and rebase the current branch onto it.
+
+## Usage
 
 ```
 /sync-main
 ```
 
-## 手順
+## Steps
 
-1. 現在のブランチを記録する
+1. Record the current branch
    ```bash
    git branch --show-current
    ```
 
-2. main を最新に更新する
+2. Update main to the latest state
    ```bash
    git fetch origin
    git checkout main
    git pull origin main
    ```
 
-3. 元のブランチに戻ってリベースする
+3. Return to the original branch and rebase
    ```bash
-   git checkout <元のブランチ>
+   git checkout <original-branch>
    git rebase main
    ```
 
-4. コンフリクトがあれば内容を確認してユーザーに報告する
+4. If there are conflicts, review the details and report them to the user
 
-## 注意
+## Notes
 
-- リベース後は `git push --force-with-lease` が必要になる場合がある
-- コンフリクトが複雑な場合はユーザーに確認してから進める
+- After rebasing, `git push --force-with-lease` may be required
+- If conflicts are complex, confirm with the user before proceeding
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of the skill run, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of friction or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill sync-main` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
+- Yes: run `/update-skill sync-main`, present the improvement proposal, and apply it once approved
+- No: record the reason for not updating in one line, and confirm the conditions for the next review

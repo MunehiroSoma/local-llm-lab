@@ -1,5 +1,5 @@
 ---
-description: 使用したスキルの実行結果を振り返り、SKILL.md を改善する
+description: Review the execution results of a used skill and improve its SKILL.md
 metadata:
     github-path: skills/update-skill
     github-ref: refs/heads/main
@@ -9,75 +9,77 @@ name: update-skill
 ---
 # skill: update-skill
 
-直前に使用したスキルの実行を振り返り、SKILL.md の改善点を特定して更新する。
-スキルは使うたびに育てる。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Review the execution of the most recently used skill, identify improvements to its SKILL.md, and update it.
+A skill grows every time it is used.
+
+## Usage
 
 ```
-/update-skill <スキル名>
-例: /update-skill ship
+/update-skill <skill-name>
+example: /update-skill ship
 ```
 
-## 実行トリガー（他スキル実行後）
+## Execution trigger (after running another skill)
 
-他スキルの実行終了時に、次の確認を必ず人間へ行う。
+At the end of running another skill, always ask the human the following.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of friction or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-- Yes: `/update-skill <対象スキル名>` を実行する
-- No: 見送り理由を関連 Issue または作業メモに 1 行で残し、次回の見直し条件を確認する
+- Yes: run `/update-skill <target-skill-name>`
+- No: leave the reason for skipping in one line in a related Issue or work note, and confirm the conditions for the next review
 
-## 手順
+## Steps
 
-1. 対象スキルの SKILL.md を読む
+1. Read the target skill's SKILL.md
    - Claude Code: `.claude/skills/<name>/SKILL.md`
-   - Codex（併用時）: `.codex/skills/<name>/SKILL.md`
+   - Codex (if also used): `.codex/skills/<name>/SKILL.md`
 
-2. 直前の実行を振り返る（以下の観点で）
-   - 手順が曖昧で判断に迷った箇所はあったか？
-   - 手順が多すぎ / 少なすぎたか？
-   - エラーや想定外の動作が起きたか？
-   - より簡潔または効果的な方法があったか？
-   - コマンド例が古くなっていないか？
+2. Review the most recent execution (from the following perspectives)
+   - Were there any steps that were ambiguous and caused hesitation?
+   - Were there too many / too few steps?
+   - Did any errors or unexpected behavior occur?
+   - Was there a simpler or more effective approach?
+   - Are the example commands out of date?
 
-3. 改善案をユーザーに提示する（変更前 / 変更後を明示）
+3. Present the improvement proposal to the user (clearly showing before / after)
 
-4. ユーザーが承認したら SKILL.md を更新する（Codex 併用時は両方を同期）
+4. Once the user approves, update SKILL.md (if Codex is also used, sync both)
 
-5. 関連 Issue または作業メモに結果を記録する
+5. Record the outcome in a related Issue or work note
 
-6. 変更内容をコミットする
+6. Commit the change
    ```bash
    git add .claude/skills/<name>/SKILL.md
    git commit -m "chore: update <name> skill based on usage feedback"
    ```
 
-## 改善の判断基準
+## Criteria for judging improvements
 
-| 状況 | 対応 |
+| Situation | Response |
 |---|---|
-| 手順が曖昧で毎回迷う | 具体例を追加する |
-| 手順が長すぎる | 本質でない手順を削除 / 折りたたむ |
-| コマンドがエラーになった | 正しいコマンドに修正する |
-| 新しいベストプラクティスを発見した | 手順に反映する |
-| 使わない手順がある | 削除する |
+| Steps are ambiguous and cause hesitation every time | Add concrete examples |
+| Steps are too long | Remove / collapse non-essential steps |
+| A command produced an error | Fix it to the correct command |
+| A new best practice was discovered | Reflect it in the steps |
+| There is an unused step | Remove it |
 
-## 注意
+## Notes
 
-- ユーザーの承認なしに SKILL.md を書き換えない
-- Codex を併用する場合は `.claude/` と `.codex/` を常に同期する
-- 変更は必ずコミットして履歴に残す
+- Do not rewrite SKILL.md without the user's approval
+- When also using Codex, always keep `.claude/` and `.codex/` in sync
+- Always commit changes so they remain in history
 
-## 既存フローが機能しない場合の再検討
+## Reconsidering when the existing flow isn't working
 
-次のどれかに該当したら、確認フロー自体を見直す。
+If any of the following apply, reconsider the confirmation flow itself.
 
-- 実行後の確認質問が省略される
-- 質問しても Yes / No の判断基準が曖昧で更新につながらない
-- 同じ改善点が複数回出るのに SKILL.md へ反映されない
+- The post-run confirmation questions are being skipped
+- Even when asked, the Yes/No criteria are unclear and don't lead to an update
+- The same improvement point comes up multiple times but is never reflected in SKILL.md
 
-見直し時は「質問文」「遷移条件」「Issue への記録方法」をセットで更新する。
+When reconsidering, update the "question wording," "transition conditions," and "how it's recorded in the Issue" together as a set.

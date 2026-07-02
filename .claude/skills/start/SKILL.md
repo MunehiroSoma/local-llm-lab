@@ -1,5 +1,5 @@
 ---
-description: 作業開始時に GitHub Issues を確認し、ブランチ作成まで一括実行する
+description: Check GitHub Issues at the start of work and run everything through branch creation
 metadata:
     github-path: skills/start
     github-ref: refs/heads/main
@@ -9,73 +9,75 @@ name: start
 ---
 # skill: start
 
-新しい作業を始める前に GitHub Issues を確認し、取り掛かる Issue を選んでブランチを切る。
+**IMPORTANT: Always respond to the user in Japanese (日本語), even though this skill file is written in English.**
 
-## 使い方
+Before starting new work, check GitHub Issues, choose the Issue to work on, and cut a branch.
+
+## Usage
 
 ```
 /start
 ```
 
-## 手順
+## Steps
 
-0. 事前チェック（必須）
+0. Pre-flight check (required)
    ```bash
    command -v gh
    gh auth status
    ```
-   - `gh` が未導入、または未ログインの場合は処理を止める
-   - `sudo` が必要なインストールや認証操作は、必ずユーザーに実行を依頼する
-   - ユーザーの確認なしに API フォールバックや別経路で先に進めない
+   - If `gh` is not installed or not logged in, stop processing
+   - Always ask the user to perform any installation or authentication operation that requires `sudo`
+   - Do not proceed via an API fallback or another route without the user's confirmation
 
-1. Open な Issue 一覧を取得する
+1. Get the list of open Issues
    ```bash
    gh issue list --repo <owner>/<repo> --state open
    ```
 
-2. ラベル・番号を確認して作業候補を提示する
+2. Check labels and numbers and present work candidates
 
-3. ユーザーが取り掛かる Issue を選ぶ
+3. The user chooses which Issue to work on
 
-4. 選ばれた Issue の詳細を確認する
+4. Check the details of the chosen Issue
    ```bash
-   gh issue view <番号> --repo <owner>/<repo>
+   gh issue view <number> --repo <owner>/<repo>
    ```
 
-5. Issue の種別に応じたブランチを切る
+5. Cut a branch appropriate to the Issue type
    ```bash
    git checkout main
    git pull origin main
    git checkout -b <prefix>/<issue-slug>
-   # 例: feature/db-schema, fix/login-retry
+   # example: feature/db-schema, fix/login-retry
    ```
 
-6. Issue に作業開始コメントを残す（任意）
+6. Leave a work-start comment on the Issue (optional)
    ```bash
-   gh issue comment <番号> --body "作業開始します。ブランチ: <ブランチ名>"
+   gh issue comment <number> --body "Starting work. Branch: <branch-name>"
    ```
 
-## 運用ルール（完了時）
+## Operating rules (on completion)
 
-- 対象 Issue の PR をマージしたら、不要になった作業ブランチは削除する
-- マージ作業後は `main` に戻る
+- Once the PR for the target Issue is merged, delete the work branch if it is no longer needed
+- Return to `main` after the merge work
 
-## 実行エラー時の原則
+## Principles when execution errors occur
 
-- 権限不足・コマンド未導入・認証未完了で止まったら、まずユーザーに状況を共有して実行依頼する
-- ユーザーが代替手段を明示的に希望した場合のみ、代替フローへ切り替える
+- If stopped due to insufficient permissions, a missing command, or incomplete authentication, first share the situation with the user and ask them to act
+- Only switch to an alternative flow if the user explicitly requests an alternative approach
 
-## 実行後の改善確認（必須）
+## Post-run improvement check (required)
 
-スキル実行の最後に、次を必ず人間へ確認する。
+At the end of the skill run, always confirm the following with the human.
 
-1. 今回の進め方の感想（良かった点）
-2. 使いにくかった点・迷った点（使い勝手）
-3. エージェントからの改善提案（手順 / コマンド / 出力）
-4. このスキルを今すぐ更新するか（Yes / No）
+1. Impressions of how this run went (what worked well)
+2. Points of friction or hesitation (usability)
+3. Improvement suggestions from the agent (steps / commands / output)
+4. Whether to update this skill right now (Yes / No)
 
-### 遷移ルール
+### Transition rules
 
-- Yes: `/update-skill start` を実行し、改善案を提示して承認後に反映する
-- No: 更新見送り理由を 1 行で記録し、次回見直しの条件を確認する
-- 関連 Issue がある場合: 確認結果（更新した / 見送った理由）を Issue コメントで共有する
+- Yes: run `/update-skill start`, present the improvement proposal, and apply it once approved
+- No: record the reason for not updating in one line, and confirm the conditions for the next review
+- If there is a related Issue: share the outcome (updated / reason for skipping) as an Issue comment
