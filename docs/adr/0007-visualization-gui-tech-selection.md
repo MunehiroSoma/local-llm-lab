@@ -3,7 +3,7 @@
 - ステータス: accepted
 - 日付: 2026-07-02
 - 入力: [`docs/research/2026-07-02-webapp-gui-visualization-study.md`](../research/2026-07-02-webapp-gui-visualization-study.md)
-- 関連: #35（results集計→reports自動生成）, #40, #42
+- 関連: #35（results集計→reports自動生成）, #40, #41（本ADRのPhase B決定に基づき規約を作成）, #42, #45（registry JSON Schema）
 
 ## 背景 / 課題
 「Web画面/GUI操作でresultsをグラフ確認し、md/pdf/csvで出力する」構想について、

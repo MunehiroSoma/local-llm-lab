@@ -37,7 +37,11 @@
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.\\-][a-z0-9]+)*$" },
-        "status": { "type": "string", "enum": ["candidate", "onboarded"] },
+        "status": {
+          "type": "string",
+          "enum": ["candidate", "onboarded"],
+          "$comment": "手動遷移。record-resultsスキルでのモデル採否判断確定時にcandidate→onboardedへ変更しrevisionを固定する運用（自動検証はしない）"
+        },
         "hf_repo": { "type": "string", "minLength": 1 },
         "revision": { "type": ["string", "null"] },
         "modality": {
@@ -80,7 +84,12 @@
       },
       "then": {
         "properties": {
-          "revision": { "type": "string", "minLength": 1 }
+          "revision": {
+            "type": "string",
+            "minLength": 1,
+            "not": { "enum": ["latest", "main", "master", "HEAD", "head"] },
+            "$comment": "onboarded後は可変参照(ブランチ名/latest/HEAD)ではなく実際のコミットハッシュで固定する"
+          }
         }
       }
     }

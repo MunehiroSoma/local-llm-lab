@@ -7,7 +7,8 @@ updates:
     commit-message:
       prefix: "chore(deps)"
 
-  - package-ecosystem: "pip"
+  # uv.lock を直接理解するネイティブエコシステム（"pip"はuv.lockを更新しないため使わない）
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "monthly"
