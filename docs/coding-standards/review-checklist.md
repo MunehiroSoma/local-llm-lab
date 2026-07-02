@@ -20,6 +20,13 @@
 | テスト | [`review-checklist/04-test.md`](review-checklist/04-test.md) | 差分のみ | 軽量〜中位 |
 | 設計整合性 | [`review-checklist/05-design-consistency.md`](review-checklist/05-design-consistency.md) | 差分 + ADR/研究ノート | 上位 |
 | harness-eval-registry | [`review-checklist/06-harness-eval-registry.md`](review-checklist/06-harness-eval-registry.md) | 差分のみ（registry変更時はADRも） | 上位 |
+| Webセキュリティ（条件付き） | [`review-checklist/07-web-security.md`](review-checklist/07-web-security.md) | 差分のみ | 上位 |
+
+条件付き観点は常時起動せず、差分の内容に応じて起動する（下表）。
+
+| 観点 | 起動条件 |
+|---|---|
+| Webセキュリティ | Streamlit/Gradio 等の Web/GUI 実装を含む差分のとき（ADR 0007 Phase B以降） |
 
 観点特化エージェントのノイズ抑制ルール・読み取り専用権限・出力フォーマットは
 [`.claude/skills/review/SKILL.md`](../../.claude/skills/review/SKILL.md) を参照。
