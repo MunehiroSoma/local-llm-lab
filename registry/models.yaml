@@ -92,8 +92,8 @@ models:
 
   - id: devstral-small-2
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
-    hf_repo: mistralai/Devstral-Small-2   # ← 正式repo名は要確認
-    revision: null
+    hf_repo: mistralai/Devstral-Small-2-24B-Instruct-2512
+    revision: c599e8e56f3f9110e97f0dc0450ce248e3334d84
     modality: [text]
     params: 24B
     quantization: [q4_k_m, fp8]
@@ -101,7 +101,7 @@ models:
     max_model_len: 131072
     profiles: [coding]
     target_envs: [rtx-5060ti, mac, dgx-spark]
-    notes: "Mistralのエージェント特化。SWE-bench ~68%。16GBの上限級。"
+    notes: "Mistralのエージェント特化。Mac/Ollama実測は devstral-small-2 Q4_K_M。Ollama reported context: 393216。"
 
   # ---- VLM（視覚）----
   - id: qwen2.5-vl-7b
