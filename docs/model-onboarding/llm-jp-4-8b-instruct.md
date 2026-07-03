@@ -89,3 +89,27 @@ Hold. The model now completes all four onboarding layers on Mac/Ollama and remai
 これにより、full 公式 `llm-jp-eval` dataset による Layer 3 標準ベンチの不足分は埋まった。#64 は Layer 4 を
 golden / rubric 水準で再実行し、`results/results.csv` の final or revised row 追記が承認され、最終 verdict が
 記録されるまでは `hold` のままとする。
+
+## 2026-07-03 Layer 4 addendum
+
+公開可能な架空サンプルだけを使う `summary-tags-public-v1` golden task set と固定
+`deterministic-marker-rubric-v1` で、要約・タグ付けの Layer 4 自前タスク評価を実行した。
+
+- Task set: `datasets/golden/samples/summary-tags-public-v1.yaml`
+- Runner: `harness.task.promptfoo.summary_tags_eval`
+- Tasks: 3
+- Passed / total: `3 / 3`
+- Task score: `1.0`
+- Median tok/s: `48.008572410685474`
+- Median TTFT: `392.4070829998527 ms`
+- Raw: `results/raw/2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.json`
+- Report: `results/reports/2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.md`
+
+Operations approval gate で承認された場合の final/revised row 候補:
+
+```csv
+llm-jp-4-8b-instruct,7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1,ollama,mac,summarize,q4_k_m,yes,65536,48.7303,185.477,,0.959786,1,,2026-07-03,adopt-candidate; stop=<|end|>; bench=llm-jp-eval-jcommonsenseqa-full-v2.1.5; task=summary-tags-public-v1; judge=deterministic-marker-rubric-v1; pass=3/3; ollama_id=d5bf362b9fd8; raw=2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.json
+```
+
+Layer 3 / Layer 4 は完了したが、`results/results.csv` 追記と最終 `adopt` / `hold` / `reject` verdict は human
+Operations approval gate 後に行う。
