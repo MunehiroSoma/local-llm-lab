@@ -92,9 +92,9 @@ However, the OpenAI-compatible endpoint used by the shared harness returned empt
 current onboarding verdict therefore reflects the supported harness path, not a claim that the native Ollama API cannot
 generate text.
 
-## Proposed results row
+## Recorded results row
 
-This row is not appended yet because `results/results.csv` append and adopt/hold/reject are Operations approval gates.
+This row was appended to `results/results.csv` after Operations approval.
 
 ```csv
 qwen3-8b,,ollama,mac,summarize,q4_k_m,yes,40960,46.3565,163.1,,0,0,,2026-07-03,reject; bench=llm-jp-eval-jcommonsenseqa-full-v2.1.5; task=summary-tags-public-v1; judge=deterministic-marker-rubric-v1; pass=0/3; openai_compat_content_empty; ollama_id=500a1f067a9f; raw=2026-07-03-qwen3-8b-onboarding-fit-speed-task.json
