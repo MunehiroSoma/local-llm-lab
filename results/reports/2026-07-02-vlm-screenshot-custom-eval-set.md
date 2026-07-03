@@ -97,5 +97,11 @@ Per-task status:
 | `synthetic-code-review` | Code review UI | pass | `1.00` |
 | `synthetic-chart-tooltip` | Chart tooltip | pass | `0.80` |
 
-`results/results.csv` was not updated in this BOLT because representative result rows require the Operations approval
-gate.
+## Appended results row
+
+After human Operations approval, the representative result row below was appended to `results/results.csv` with a
+`hold` decision. This is a separate `vlm-screenshot` profile from the earlier public-image `vlm` smoke row.
+
+```csv
+gemma4-26b-a4b,,ollama,mac,vlm-screenshot,q4_k_m,yes,128000,62.4738,1681.963,,,0.98,,2026-07-02,hold; synthetic screenshot task set v1; pass=10/10; task=vlm-screenshot-task-set-v1; svg_rasterized_to_png; raw=2026-07-02-vlm-screenshot-gemma4-baseline.json
+```
