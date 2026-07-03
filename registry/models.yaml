@@ -183,7 +183,7 @@ models:
     max_model_len: 131072
     profiles: [summarize, coding]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
-    notes: "多言語/日本語/構造化。JSONは7B+推奨。"
+    notes: "多言語/日本語/構造化。JSONは7B+推奨。Mac/Ollama実測は qwen3:8b Q4_K_M、Ollama ID 500a1f067a9f、context 40960。OpenAI互換APIではcontent空のため2026-07-03時点のonboarding verdictはreject。"
 
   - id: qwen3-0.6b
     status: candidate
