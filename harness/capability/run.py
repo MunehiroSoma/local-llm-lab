@@ -8,24 +8,11 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
 
+from harness.capability.adapters import extract_benchmark_score
 from harness.common.registry import load_registry, model_defaults
 from harness.common.results import append_result
 from harness.common.types import ResultRow
-
-
-def extract_metric(data: Any, path: str) -> float:
-    """Extract a numeric metric from nested JSON using a dot-separated path."""
-    value = data
-    for part in path.split("."):
-        if isinstance(value, dict):
-            value = value[part]
-        else:
-            raise KeyError(path)
-    if not isinstance(value, int | float):
-        raise TypeError(f"metric {path!r} is not numeric")
-    return float(value)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -41,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-model-len", type=int)
     parser.add_argument("--score", type=float)
     parser.add_argument("--score-json", type=Path)
-    parser.add_argument("--metric-key")
+    parser.add_argument("--metric-key", help="Dot path override for the score metric inside --score-json.")
     parser.add_argument("--command", help="Optional external benchmark command to run before parsing score-json.")
     parser.add_argument("--results", type=Path, default=Path("results/results.csv"))
     parser.add_argument("--append-results", action="store_true")
@@ -52,10 +39,14 @@ def main(argv: list[str] | None = None) -> int:
         if completed.returncode != 0:
             return completed.returncode
     score = args.score
-    if score is None and args.score_json and args.metric_key:
-        score = extract_metric(json.loads(args.score_json.read_text(encoding="utf-8")), args.metric_key)
+    if score is None and args.score_json:
+        score = extract_benchmark_score(
+            json.loads(args.score_json.read_text(encoding="utf-8")),
+            args.bench,
+            metric_key=args.metric_key,
+        )
     if score is None:
-        parser.error("--score or (--score-json and --metric-key) is required")
+        parser.error("--score or --score-json is required")
 
     registry = load_registry()
     defaults = model_defaults(registry, args.model, args.env)

@@ -53,7 +53,7 @@ python3 -m harness.task.vlm.screenshot_eval \
 | #7 common | `harness/common/`: OpenAI互換HTTPクライアント、計測、registry解決、results追記 |
 | #8 fit | `harness/fit/openai.py`: 短い推論によるロード可否/OOM分類 |
 | #9 speed | `harness/speed/openai.py`: TTFT・tok/s中央値計測 |
-| #10 capability | `harness/capability/run.py`: 標準ベンチ代表スコア記録 |
+| #10 capability | `harness/capability/run.py` + `harness/capability/adapters.py`: 標準ベンチ代表スコア抽出・記録 |
 | #11 promptfoo | `harness/task/promptfoo/`: 要約・タグ JSON schema/rubric 雛形 |
 | #12 deepeval | `harness/task/deepeval/`: G-Eval/agent metric 集計 |
 | #13 coding-agent | `harness/task/coding_agent/`: 仕様書駆動 eval case runner |

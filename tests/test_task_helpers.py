@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from harness.capability.run import extract_metric
+from harness.capability.adapters import extract_metric
 from harness.task.deepeval.rubric import aggregate_scores
 from harness.task.promptfoo.evaluate_json import score_summary_tags
 from harness.task.vlm.markers import score_markers
