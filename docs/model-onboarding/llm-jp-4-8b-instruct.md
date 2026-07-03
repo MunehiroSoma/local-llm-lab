@@ -69,7 +69,7 @@ This row was appended to `results/results.csv` after human approval to complete 
 llm-jp-4-8b-instruct,7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1,ollama,mac,summarize,q4_k_m,yes,65536,48.7303,185.477,,1,1,,2026-07-02,hold; stop=<|end|>; bench=llm-jp-eval-smoke-ja-qa-public-v1; task=summary-tags-schema-public-v1; ollama_id=d5bf362b9fd8
 ```
 
-## Verdict
+## 2026-07-02 Preliminary verdict
 
 Hold. The model now completes all four onboarding layers on Mac/Ollama and remains useful as a Japanese baseline candidate, but the Layer 3 score is only a lightweight public smoke rather than a full official `llm-jp-eval` run. The summary/tag schema passed, but the generated label text contained a minor typo (`ローカリアルLM`), so this should not be adopted as a production summarization model without a fuller Japanese eval.
 
@@ -89,3 +89,32 @@ Hold. The model now completes all four onboarding layers on Mac/Ollama and remai
 これにより、full 公式 `llm-jp-eval` dataset による Layer 3 標準ベンチの不足分は埋まった。#64 は Layer 4 を
 golden / rubric 水準で再実行し、`results/results.csv` の final or revised row 追記が承認され、最終 verdict が
 記録されるまでは `hold` のままとする。
+
+## 2026-07-03 Layer 4 addendum
+
+公開可能な架空サンプルだけを使う `summary-tags-public-v1` golden task set と固定
+`deterministic-marker-rubric-v1` で、要約・タグ付けの Layer 4 自前タスク評価を実行した。
+
+- Task set: `datasets/golden/samples/summary-tags-public-v1.yaml`
+- Runner: `harness.task.promptfoo.summary_tags_eval`
+- Tasks: 3
+- Passed / total: `3 / 3`
+- Task score: `1.0`
+- Median tok/s: `48.008572410685474`
+- Median TTFT: `392.4070829998527 ms`
+- Raw: `results/raw/2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.json`
+- Report: `results/reports/2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.md`
+
+Operations approval gate で承認されたため、次の final/revised row を `results/results.csv` に append-only で追記した。
+
+```csv
+llm-jp-4-8b-instruct,7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1,ollama,mac,summarize,q4_k_m,yes,65536,48.7303,185.477,,0.959786,1,,2026-07-03,adopt; stop=<|end|>; bench=llm-jp-eval-jcommonsenseqa-full-v2.1.5; task=summary-tags-public-v1; judge=deterministic-marker-rubric-v1; pass=3/3; ollama_id=d5bf362b9fd8; raw=2026-07-03-llm-jp-4-8b-instruct-summary-tags-public-v1.json
+```
+
+## 2026-07-03 Final verdict
+
+Adopt. Mac/Ollama で `fit=yes`、speed は preliminary run と同じ `tok_s=48.7303` / `ttft_ms=185.477` を維持した。
+Layer 3 は official `llm-jp-eval` v2.1.5 の `jcommonsenseqa` test full split で `std_bench=0.959786`、
+Layer 4 は `summary-tags-public-v1` golden/rubric 評価で `task_score=1.0` / `pass=3/3` だった。
+preliminary row は smoke / schema-only のため同条件比較ではないが、full Layer 3 と golden Layer 4 の双方で
+採用基準を満たす日本語 baseline として `adopt` とする。
