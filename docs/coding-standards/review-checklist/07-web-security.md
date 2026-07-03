@@ -16,6 +16,9 @@
 | 6 | API 層（FastAPI ルータ）にビジネスロジックを直接書かず `harness/` から呼び出している | 手動 | Should | `web-gui.md` §構成 |
 | 7 | フロントエンドの状態管理がコンポーネントローカル優先で、グローバルミュータブル変数を使っていない | 手動 | Should | `web-gui.md` §状態管理 |
 | 8 | 依存追加（react/vite/fastapi等）が `web/package.json` または `pyproject.toml` の `api` グループにバージョンピンされている | 手動 | Should | ADR 0007 |
+| 9 | UI が Tailwind CSS 前提で実装され、大量の手書きCSS・CSS Modules主戦力化・`style`属性調整を避けている | 手動 | Should | `web-gui.md` §CSS / Tailwind CSS |
+| 10 | `npm run lint` / `npm run format:check` / `npm run typecheck` が実行されている | 手動 | Must | `web/package.json` scripts |
+| 11 | a11y と UI一貫性を目視確認している（色だけに依存しない、ラベル・レイアウトが揃っている） | 手動 | Should | `web-gui.md` §a11y |
 
 > 自動区分は pre-commit/CI が green であればスキップ可（Web/GUI 固有の ESLint/Prettier 等の
 > pre-commit 組み込みは Phase B 実装 Issue で行う）。

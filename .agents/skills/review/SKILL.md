@@ -38,7 +38,7 @@ Launch one Explore-type subagent per viewpoint category in `docs/coding-standard
 | Test | `docs/coding-standards/review-checklist/04-test.md` | Diff only | Lightweight to mid-tier |
 | Design consistency | `docs/coding-standards/review-checklist/05-design-consistency.md` | Diff + ADRs / research notes | Higher-tier |
 | harness-eval-registry | `docs/coding-standards/review-checklist/06-harness-eval-registry.md` | Diff only (ADRs too if `registry` changes) | Higher-tier |
-| Web security (conditional) | `docs/coding-standards/review-checklist/07-web-security.md` | Diff only | Higher-tier |
+| Web security / UI (conditional) | `docs/coding-standards/review-checklist/07-web-security.md` | Diff only | Higher-tier |
 | Data operations / resource management | `docs/coding-standards/review-checklist/08-data-operations.md` | Diff only | Higher-tier |
 | External API integration | `docs/coding-standards/review-checklist/09-external-api.md` | Diff only | Higher-tier |
 | CI/CD & supply chain (conditional) | `docs/coding-standards/review-checklist/10-cicd-supply-chain.md` | Diff only | Higher-tier |
@@ -47,7 +47,10 @@ Launch one Explore-type subagent per viewpoint category in `docs/coding-standard
 - **Right model for the job**: use a lightweight model for mechanical, convention/format checks (naming, import ordering, forbidden-pattern detection); use a higher-tier model for viewpoints requiring design judgment, harness logic, or architectural consistency.
 - **Scale the launch to the change size**: for small diffs (rule of thumb: fewer than 5 files), launch only the main viewpoints (basic quality, error handling, test); for model-onboarding or large harness changes, launch all viewpoints including data operations and external API integration.
 - **Conditional viewpoints**: only launch these when the diff matches their trigger, never for unrelated diffs.
-  - Web security: diff touches `web/` (React) or a FastAPI backend (ADR 0007 Phase B onward).
+  - Web security / UI: diff touches `web/` (React) or a FastAPI backend (ADR 0007 Phase B onward).
+    Check XSS / `dangerouslySetInnerHTML`, unauthenticated LAN exposure, React and harness logic separation,
+    frontend secret leakage, a11y / UI consistency, Tailwind CSS usage, handwritten CSS suppression,
+    and `npm run lint` / `npm run format:check` / `npm run typecheck` execution.
   - CI/CD & supply chain: diff touches `.github/workflows/` or adds/updates a dependency (`pyproject.toml`/`uv.lock`/`web/package.json`).
   - Infra / containers: diff touches `envs/` Docker/compose implementation.
 

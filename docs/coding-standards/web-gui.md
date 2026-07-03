@@ -1,6 +1,6 @@
 # Web / GUI コーディング規約
 
-- Version: 1.1 / 作成: 2026-07-02 / 最終更新: 2026-07-02
+- Version: 1.2 / 作成: 2026-07-02 / 最終更新: 2026-07-03
 - 対象: React + TypeScript フロントエンド + FastAPI バックエンド（ADR 0007 Phase B）
 - 本ページは **Web/GUI 実装固有のルールのみ**を扱う。
   フロントエンドのコード書式は [`javascript-typescript.md`](javascript-typescript.md)、
@@ -18,6 +18,47 @@
   ビジネスロジック・集計・harness 呼び出しは `harness/` 側に置き、API 層（`presentation`/`routers`
   相当）は「リクエストの受け取り→`harness/`呼び出し→レスポンス整形」のみに責務を絞る。
   React からロジックを直接呼ぶことはしない（必ず API 経由）。
+
+## フロントエンド tooling
+
+`web/` は Python 側の ruff / mypy / pre-commit とは分離した frontend tooling として管理する。
+
+- 依存解決: `cd web && npm ci`
+- lint: `npm run lint`
+- format check: `npm run format:check`
+- typecheck: `npm run typecheck`
+
+`web/package.json` には少なくとも次の scripts を置く。
+
+| script | 用途 |
+|---|---|
+| `dev` | Vite dev server。`127.0.0.1` に明示バインドする |
+| `lint` | ESLint |
+| `format` | Prettier 書き込み |
+| `format:check` | Prettier 検証 |
+| `typecheck` | TypeScript compiler |
+| `test` | frontend test 導入後の入口。未導入時も方針を明示する |
+
+## CSS / Tailwind CSS
+
+Phase B の React UI は **Tailwind CSS を必須**とし、CSS は Tailwind utility / `@theme`
+design token / base layer を主戦力にする。
+
+禁止・抑制:
+
+- 大量の手書きCSS
+- CSS Modules を主戦力にすること
+- `style` 属性による局所調整
+- Tailwind で表現できるものを独自 class で再定義すること
+
+許可する例外:
+
+- Tailwind entry CSS（例: `@import 'tailwindcss';`）
+- `@theme` / design token / `@layer base`
+- reset / typography など framework 管理下の設定
+- 外部ライブラリ都合の最小限の調整
+
+Tailwind class の並び順は `prettier-plugin-tailwindcss` で機械整形する。
 
 ## バインド先・公開範囲
 - 開発・単独利用時は **FastAPI / Vite dev server ともに `127.0.0.1`（localhost）に明示バインド**する。
@@ -59,3 +100,9 @@
 - バックエンド依存（fastapi/uvicorn等）は `pyproject.toml` の `api` optional-dependencies
   グループに追加し、バージョンピンする。
 - いずれも追加時は CI/CD レビュー資料 C-1・C-5（実在確認・メンテ状況確認）を先に済ませる。
+
+## E2E 検証候補
+
+Playwright MCP は Phase B の React UI 実装開始時に導入を検討する。Phase A 静的レポート生成には不要。
+導入時は `npm run lint` / `npm run format:check` / `npm run typecheck` に加えて、E2E 用の npm script と
+検証手順を `web/README.md` または本規約へ追記する。

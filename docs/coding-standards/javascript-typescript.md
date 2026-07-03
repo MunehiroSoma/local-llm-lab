@@ -1,6 +1,6 @@
 # コーディング規約: JavaScript / TypeScript
 
-- Version: 0.1 / 作成: 2026-03-25 / 最終更新: 2026-07-02（local-llm-lab導入・ADR 0007対応の節を追加）
+- Version: 0.2 / 作成: 2026-03-25 / 最終更新: 2026-07-03（React/Vite/Tailwind tooling 方針を追加）
 - 作成者・最終更新者: 宗廣 颯真
 - 対象: JavaScript / TypeScript による開発全般（Vue / React / Node.js）
 - 関連: ADR 0007（Phase B は React + TypeScript を主軸に採用） / [`web-gui.md`](web-gui.md)
@@ -35,7 +35,7 @@ Vue 向け補足 / React 向け補足 / Node.js（バックエンド）向け補
 
 ## ディレクトリ構造
 
-フロントエンド（React 想定。Vue 採用時も同構成）:
+フロントエンド（本リポジトリ Phase B は React + TypeScript + Vite + Tailwind CSS）:
 ```
 web/
   ├─ src/
@@ -46,7 +46,12 @@ web/
   │   ├─ services/          # API 呼び出し
   │   └─ utils/             # 汎用ユーティリティ
   ├─ tests/
+  ├─ eslint.config.js
+  ├─ prettier.config.cjs
+  ├─ tsconfig.json
+  ├─ vite.config.ts
   ├─ package.json
+  ├─ package-lock.json
   └─ README.md
 ```
 
@@ -192,6 +197,12 @@ export class UserNotFoundError extends Error {
 ## React 向け補足
 > 本リポジトリ Phase B の主軸（ADR 0007）。基本規約と重複する部分は基本規約を優先する。
 
+- `web/` は React + TypeScript + Vite + Tailwind CSS を標準構成にする。
+- frontend tooling は `web/package.json` に閉じ、Python 側の ruff / mypy と混在させない。
+- 検証コマンドは `cd web && npm ci` 後に `npm run lint`、`npm run format:check`、
+  `npm run typecheck` を実行する。
+- CSS は Tailwind utility / `@theme` token / base layer を優先し、大量の手書きCSS、CSS Modules
+  主戦力化、`style` 属性による局所調整を避ける。
 - **関数コンポーネント**を使用する（クラスコンポーネントは禁止）。
 - コンポーネントはUI表示に専念し、ビジネスロジックはカスタムHooksに切り出す。
 
@@ -232,3 +243,4 @@ class UserCard extends React.Component { ... }
 |---|---|---|---|
 | 0.1 | 2026-03-25 | 宗廣 颯真 | 初版作成 |
 | 0.1（本リポジトリ採用） | 2026-07-02 | — | ADR 0007 に伴い local-llm-lab の `docs/coding-standards/` へ導入。Node.js バックエンド節を適用対象外として明記 |
+| 0.2 | 2026-07-03 | — | React + TypeScript + Vite + Tailwind CSS と frontend tooling の検証手順を明記 |

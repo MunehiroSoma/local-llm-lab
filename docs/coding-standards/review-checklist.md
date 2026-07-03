@@ -30,7 +30,7 @@
 
 | 観点 | 起動条件 |
 |---|---|
-| Webセキュリティ | React(`web/`)/FastAPI 等の Web/GUI 実装を含む差分のとき（ADR 0007 Phase B以降） |
+| Webセキュリティ / UI | React(`web/`)/FastAPI 等の Web/GUI 実装を含む差分のとき（ADR 0007 Phase B以降） |
 | CI/CD・サプライチェーン | `.github/workflows/` の変更、または依存関係（`pyproject.toml`/`uv.lock`/`web/package.json`等）の追加・更新を含む差分のとき |
 | インフラ・コンテナ | `envs/` の Docker/compose 実装を含む差分のとき |
 
