@@ -12,7 +12,7 @@ machines:
     vram_gb: 48                # unified
     mem_bandwidth_gbs: 273     # approx — 要確認
     compute: metal
-    runtimes: [mlx-vlm, ollama, llama.cpp]
+    runtimes: [mlx-vlm, ollama, llama.cpp, vllm-metal]
     role: "画像+テキスト+音声入力の常時手元機。フルomniは対象外。"
 
   - id: rtx-5060ti

@@ -5,6 +5,8 @@
 ## ランタイム
 - **Ollama(MLX backend)**: 導入済み想定（`ollama --version` ≥ 0.19）。共通基準ライン。
 - **MLX-VLM**: 実力ライン（arm64 Python 3.12 必須・Rosetta 不可）。
+- **llama.cpp**: GGUF/Metal の低レイヤ比較。Ollama との差分と `llama-bench` を確認する。
+- **vLLM Metal**: OpenAI互換 server 候補。arm64 Python 3.12 で導入し、harness 連携を確認する。
 
 ## セットアップ
 ```bash
@@ -16,6 +18,9 @@ ollama serve                    # OpenAI互換: http://127.0.0.1:11434/v1
 uv venv --python 3.12 ~/.venv-mlxvlm && source ~/.venv-mlxvlm/bin/activate
 uv pip install mlx-vlm
 python -m mlx_vlm.generate --model <mlx-community/...> --image <path> --prompt "..."
+
+# llama.cpp / vLLM Metal（追補導入対象）
+# 詳細手順は envs/mac/README.md の追補 BOLT で固定する。
 ```
 
 repo 内から再現する場合は [`envs/mac/`](../../envs/mac/) を使う。
@@ -57,6 +62,8 @@ Gemma4 の Ollama stream は `delta.reasoning` に生成を流すことがある
 ## 計測
 - 電力: `sudo powermetrics --samplers gpu_power,cpu_power -i 1000`（SoC全体）
 - 速度: MLXの内蔵計時 + OpenAI互換化して GenAI-Perf/`vllm bench` 併用可
+- 低レイヤ比較: llama.cpp は `llama-bench`、vLLM Metal は OpenAI互換 endpoint を harness から叩く
 
 ## 注意
 - vLLM本体(CUDA)は不可。omni(動画/音声出力)は不可に近い。
+- vLLM Metal は CUDA vLLM とは別 runtime として扱う。NVIDIA 側の vLLM 結果と同列に混ぜない。
