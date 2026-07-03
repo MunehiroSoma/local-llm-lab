@@ -1,0 +1,4 @@
+interface:
+  display_name: "Next Work"
+  short_description: "現在のPRやIssue状態から次作業を根拠付きで提案します"
+  default_prompt: "Use $next-work to inspect the current repository state and recommend the next task."
