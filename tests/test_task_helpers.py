@@ -1,6 +1,20 @@
 from __future__ import annotations
 
+import json
+
 from harness.capability.adapters import extract_metric
+from harness.task.coding_agent.run_case import (
+    DEFAULT_TASK_SET as CODING_AGENT_TASK_SET,
+)
+from harness.task.coding_agent.run_case import (
+    load_task_set as load_coding_agent_task_set,
+)
+from harness.task.coding_agent.run_case import (
+    score_output as score_coding_agent_output,
+)
+from harness.task.coding_agent.run_case import (
+    summarize_results as summarize_coding_agent_results,
+)
 from harness.task.deepeval.rubric import aggregate_scores
 from harness.task.promptfoo.evaluate_json import score_summary_tags
 from harness.task.promptfoo.summary_tags_eval import (
@@ -51,6 +65,54 @@ def test_score_summary_tags_output_with_fixed_rubric() -> None:
 
 def test_aggregate_deepeval_scores() -> None:
     assert aggregate_scores({"testCases": [{"score": 0.5}, {"score": 1.0}]}) == 0.75
+
+
+def test_load_coding_agent_task_set() -> None:
+    task_set = load_coding_agent_task_set(CODING_AGENT_TASK_SET)
+
+    assert task_set.version == "coding-agent-public-v1"
+    assert task_set.judge == "deterministic-json-files-pytest-rubric-v1"
+    assert {task.task_id for task in task_set.tasks} == {"slug-normalizer", "kv-parser"}
+
+
+def test_score_coding_agent_output_with_fixed_rubric() -> None:
+    task_set = load_coding_agent_task_set(CODING_AGENT_TASK_SET)
+    task = task_set.tasks[0]
+    output = json.dumps(
+        {
+            "files": [
+                {
+                    "path": "slugify_utils.py",
+                    "content": (
+                        "import re\n\n\n"
+                        "def to_slug(value: str) -> str:\n"
+                        '    normalized = re.sub(r"[^a-z0-9]+", "-", value.strip().lower())\n'
+                        '    return normalized.strip("-")\n'
+                    ),
+                }
+            ],
+            "notes": "public synthetic task",
+        }
+    )
+
+    result = score_coding_agent_output(task, output)
+    summary = summarize_coding_agent_results(task_set, [result])
+
+    assert result.passed is True
+    assert result.score == 1.0
+    assert result.tests_score == 1.0
+    assert summary["passed_count"] == 1
+    assert summary["mean_score"] == 1.0
+
+
+def test_score_coding_agent_output_penalizes_schema_failures() -> None:
+    task_set = load_coding_agent_task_set(CODING_AGENT_TASK_SET)
+    result = score_coding_agent_output(task_set.tasks[0], "not json")
+
+    assert result.passed is False
+    assert result.schema_score == 0.0
+    assert result.tests_score == 0.0
+    assert result.error == "output did not contain a JSON object"
 
 
 def test_extract_metric_from_nested_json() -> None:
