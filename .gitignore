@@ -10,6 +10,7 @@ venv/
 # --- Node (promptfoo など) ---
 node_modules/
 web/dist/
+web/*.tsbuildinfo
 
 # --- OS / editor ---
 .DS_Store
