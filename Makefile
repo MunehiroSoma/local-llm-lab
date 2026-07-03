@@ -2,7 +2,7 @@
 # 実装はPoCフェーズで harness/ に追加。ここはインターフェースの雛形。
 .DEFAULT_GOAL := help
 
-.PHONY: help env env-mac-check env-mac-ollama env-mac-smoke env-mac-llamacpp env-mac-vllm-metal whichllm fit speed capability task onboard validate sync-skills check-skills
+.PHONY: help env env-mac-check env-mac-ollama env-mac-smoke env-mac-llamacpp env-mac-vllm-metal whichllm fit speed capability task onboard report-results validate sync-skills check-skills
 
 help: ## このヘルプを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -42,6 +42,9 @@ task: ## 自前タスク評価ヘルパー（OUTPUT='{"summary":"...","tags":[".
 
 onboard: ## 新モデル一括: fit→speed→capability/task→row作成（MODEL=... ENV=... BASE_URL=...）
 	python3 -m harness.run_onboarding --model "$(MODEL)" --env "$(ENV)" --base-url "$(BASE_URL)" $(ONBOARD_ARGS)
+
+report-results: ## results/results.csv から静的Markdownレポートを生成（OUTPUT=...）
+	python3 -m harness.reporting.results_summary --output "$(or $(OUTPUT),results/reports/$$(date +%F)-results-summary.md)"
 
 validate: ## registry の YAML を検証
 	@python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in ['registry/models.yaml','registry/hardware.yaml']]; print('registry YAML OK')"
