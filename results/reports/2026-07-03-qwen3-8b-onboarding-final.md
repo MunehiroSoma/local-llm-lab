@@ -113,9 +113,9 @@ OK
 The OpenAI-compatible API smoke used by the harness returned empty `content` for short prompts against the same local
 model. That makes the current shared harness path unsuitable for adopting this model without an adapter change.
 
-## Result Row Candidate
+## Recorded Result Row
 
-`results/results.csv` is not modified yet. Append requires the Operations approval gate.
+This row was appended to `results/results.csv` after Operations approval.
 
 ```csv
 qwen3-8b,,ollama,mac,summarize,q4_k_m,yes,40960,46.3565,163.1,,0,0,,2026-07-03,reject; bench=llm-jp-eval-jcommonsenseqa-full-v2.1.5; task=summary-tags-public-v1; judge=deterministic-marker-rubric-v1; pass=0/3; openai_compat_content_empty; ollama_id=500a1f067a9f; raw=2026-07-03-qwen3-8b-onboarding-fit-speed-task.json
@@ -141,5 +141,5 @@ Local raw files:
 
 ## #29 Completion Impact
 
-Mac/Ollama で実測可能な 4 階層評価は揃った。残りは human Operations approval gate 後の
-`results/results.csv` append-only 追記、PR merge 後の #29 close。
+Mac/Ollama で実測可能な 4 階層評価、verdict、`results/results.csv` append-only 追記は完了した。
+残りは追記PR merge 後の #29 close。
