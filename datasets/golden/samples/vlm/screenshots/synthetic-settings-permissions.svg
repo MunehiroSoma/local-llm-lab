@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+  <rect width="900" height="560" fill="#f8fafc"/>
+  <rect x="95" y="70" width="710" height="420" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="130" y="122" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#0f172a">Privacy Settings</text>
+  <text x="130" y="190" font-family="Arial, sans-serif" font-size="22" fill="#0f172a">Screen recording</text>
+  <rect x="650" y="164" width="90" height="36" rx="18" fill="#16a34a"/>
+  <text x="680" y="189" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">ON</text>
+  <text x="130" y="260" font-family="Arial, sans-serif" font-size="22" fill="#0f172a">Microphone</text>
+  <rect x="650" y="234" width="90" height="36" rx="18" fill="#64748b"/>
+  <text x="675" y="259" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">OFF</text>
+  <text x="130" y="330" font-family="Arial, sans-serif" font-size="22" fill="#0f172a">External sharing</text>
+  <rect x="650" y="304" width="90" height="36" rx="18" fill="#16a34a"/>
+  <text x="680" y="329" font-family="Arial, sans-serif" font-size="18" fill="#ffffff">ON</text>
+  <rect x="130" y="380" width="610" height="58" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="155" y="416" font-family="Arial, sans-serif" font-size="20" fill="#92400e">Warning: External sharing is allowed</text>
+</svg>
