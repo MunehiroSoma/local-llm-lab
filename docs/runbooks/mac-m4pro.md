@@ -20,7 +20,8 @@ uv pip install mlx-vlm
 python -m mlx_vlm.generate --model <mlx-community/...> --image <path> --prompt "..."
 
 # llama.cpp / vLLM Metal（追補導入対象）
-# 詳細手順は envs/mac/README.md の追補 BOLT で固定する。
+bash envs/mac/setup-llamacpp-metal.sh
+bash envs/mac/setup-vllm-metal.sh
 ```
 
 repo 内から再現する場合は [`envs/mac/`](../../envs/mac/) を使う。
@@ -32,6 +33,8 @@ bash envs/mac/check.sh
 OLLAMA_MODEL=gemma4:e4b bash envs/mac/serve-ollama.sh
 MODEL=gemma4:e4b BASE_URL=http://127.0.0.1:11434/v1 bash envs/mac/smoke-ollama.sh
 bash envs/mac/setup-mlx-vlm.sh
+bash envs/mac/setup-llamacpp-metal.sh
+bash envs/mac/setup-vllm-metal.sh
 ```
 
 ## PoC(Phase 0) 手順
@@ -63,7 +66,9 @@ Gemma4 の Ollama stream は `delta.reasoning` に生成を流すことがある
 - 電力: `sudo powermetrics --samplers gpu_power,cpu_power -i 1000`（SoC全体）
 - 速度: MLXの内蔵計時 + OpenAI互換化して GenAI-Perf/`vllm bench` 併用可
 - 低レイヤ比較: llama.cpp は `llama-bench`、vLLM Metal は OpenAI互換 endpoint を harness から叩く
+- #85 代表値: `results/reports/2026-07-03-mac-runtime-expansion.md`
 
 ## 注意
 - vLLM本体(CUDA)は不可。omni(動画/音声出力)は不可に近い。
 - vLLM Metal は CUDA vLLM とは別 runtime として扱う。NVIDIA 側の vLLM 結果と同列に混ぜない。
+- vLLM Metal の smoke 用 `qwen3-0.6b` は導入確認用であり、採用判断の比較対象ではない。

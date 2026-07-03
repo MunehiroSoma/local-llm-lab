@@ -184,3 +184,16 @@ models:
     profiles: [summarize, coding]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
     notes: "多言語/日本語/構造化。JSONは7B+推奨。"
+
+  - id: qwen3-0.6b
+    status: candidate
+    hf_repo: Qwen/Qwen3-0.6B
+    revision: null
+    modality: [text]
+    params: 0.6B
+    quantization: [bf16]
+    runtimes: [vllm-metal, vllm, mlx]
+    max_model_len: 2048
+    profiles: [summarize]
+    target_envs: [mac]
+    notes: "vLLM Metal 導入確認用の小型Qwen3。採用判断の比較対象ではなく、server smoke / harness疎通用。"
