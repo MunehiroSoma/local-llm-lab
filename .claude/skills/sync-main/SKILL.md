@@ -28,15 +28,50 @@ Sync main to the latest state and rebase the current branch onto it.
 
 2. Update main to the latest state
    ```bash
-   git fetch origin
+   git fetch --prune origin
    git checkout main
-   git pull origin main
+   git pull --ff-only origin main
    ```
 
-3. Return to the original branch and rebase
+3. Choose the correct rebase path before rebasing
+
+   For an ordinary branch based directly on `main`, return to the original branch and rebase:
+
    ```bash
    git checkout <original-branch>
    git rebase main
+   ```
+
+   If the branch was stacked on a PR that was squash-merged, do not run the ordinary rebase first. Use this path
+   when the current PR was based on another work branch and that base PR has since been squash-merged into `main`.
+   A normal `git rebase main` can replay the pre-squash base commit and create conflicts or duplicate changes.
+
+   First confirm the base PR is actually merged and identify the old base branch or commit:
+
+   ```bash
+   gh pr view <base-pr-number> --json number,state,mergedAt,headRefName,baseRefName,url
+   git branch -vv
+   git log --oneline --decorate --graph --max-count=12 --all
+   ```
+
+   Then rebase only the current PR's unique commits onto updated `main`:
+
+   ```bash
+   git checkout <original-branch>
+   git rebase --onto main <old-base-branch-or-commit>
+   ```
+
+   Example:
+
+   ```bash
+   git rebase --onto main model/llm-jp-4-8b-instruct-standard-bench
+   ```
+
+   Afterward, verify that the PR diff contains only the current branch's intended files:
+
+   ```bash
+   git diff --name-status main..HEAD
+   gh pr view <current-pr-number> --json number,state,mergeable,baseRefName,headRefName,url
    ```
 
 4. If there are conflicts, review the details and report them to the user
@@ -44,6 +79,7 @@ Sync main to the latest state and rebase the current branch onto it.
 ## Notes
 
 - After rebasing, `git push --force-with-lease` may be required
+- After a stacked-PR `rebase --onto`, prefer `git push --force-with-lease` over plain force push
 - If conflicts are complex, confirm with the user before proceeding
 
 ## Post-run improvement check (required)
