@@ -125,6 +125,91 @@ python -m mlx_vlm.generate \
 - `vLLM Metal`: arm64 Python 3.12 venv、OpenAI互換 server smoke、harness `fit` / `speed`
 - `results/results.csv` へ追記する場合は、runtime を `llama.cpp` / `vllm-metal` として分ける
 
+### 6.1 llama.cpp Metal
+
+`llama.cpp` は macOS では Metal が既定で有効だが、再現性のため `-DGGML_METAL=ON` を明示する。
+source/build/model cache は repo 外に置く。
+
+```bash
+bash envs/mac/setup-llamacpp-metal.sh
+```
+
+既定値:
+
+- source: `~/.local/src/llama.cpp`
+- ref: `b9850`
+- build: `~/.local/src/llama.cpp/build`
+- binary: `~/.local/src/llama.cpp/build/bin/llama-cli`, `llama-bench`, `llama-server`
+
+smoke / bench 例:
+
+```bash
+~/.local/src/llama.cpp/build/bin/llama-cli \
+  -hf LiquidAI/LFM2.5-1.2B-JP-202606-GGUF:Q4_K_M \
+  -p '日本語でOKとだけ返してください。' \
+  -n 8 \
+  -ngl all \
+  --single-turn \
+  --no-display-prompt \
+  --no-warmup
+
+~/.local/src/llama.cpp/build/bin/llama-bench \
+  -hf LiquidAI/LFM2.5-1.2B-JP-202606-GGUF:Q4_K_M \
+  -p 128 \
+  -n 64 \
+  -r 3 \
+  -o json
+```
+
+2026-07-03 の代表値は `results/reports/2026-07-03-mac-runtime-expansion.md` に記録する。
+`llama-bench` の `-ngl` は数値のみ受け付けるため、全 offload は既定値 `-1` を使う。
+
+### 6.2 vLLM Metal
+
+vLLM Metal は Apple Silicon 用の vLLM plugin として扱い、NVIDIA CUDA vLLM とは runtime を分ける。
+arm64 Python 3.12 の venv を repo 外の `~/.venv-vllm-metal` に作る。
+
+```bash
+bash envs/mac/setup-vllm-metal.sh
+```
+
+OpenAI互換 server の最小 smoke:
+
+```bash
+HOST=127.0.0.1 \
+PORT=8008 \
+VLLM_METAL_MODEL=Qwen/Qwen3-0.6B \
+SERVED_MODEL_NAME=qwen3-0.6b \
+MAX_MODEL_LEN=2048 \
+bash envs/mac/serve-vllm-metal.sh
+```
+
+別 terminal から:
+
+```bash
+curl --fail --silent --show-error http://127.0.0.1:8008/v1/models
+
+python3 -m harness.fit.openai \
+  --model qwen3-0.6b \
+  --env mac \
+  --runtime vllm-metal \
+  --base-url http://127.0.0.1:8008/v1 \
+  --max-model-len 2048
+
+python3 -m harness.speed.openai \
+  --model qwen3-0.6b \
+  --env mac \
+  --runtime vllm-metal \
+  --base-url http://127.0.0.1:8008/v1 \
+  --max-model-len 2048 \
+  --max-tokens 64 \
+  --repeats 3 \
+  --warmups 1
+```
+
+`qwen3-0.6b` は vLLM Metal 導入確認用の小型モデルであり、採用判断の比較対象ではない。
+`results/results.csv` へ追記する場合は Operations approval gate を通す。
+
 ## 完了条件
 
 - `bash envs/mac/check.sh` が Mac/arm64 とランタイム状態を表示できる

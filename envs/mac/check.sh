@@ -59,3 +59,35 @@ if [ -x "${MLX_VLM_VENV}/bin/python" ]; then
 else
   echo "venv: missing (${MLX_VLM_VENV})"
 fi
+
+echo
+echo "=== llama.cpp ==="
+LLAMA_CPP_BIN="${LLAMA_CPP_BIN:-${HOME}/.local/src/llama.cpp/build/bin}"
+if [ -x "${LLAMA_CPP_BIN}/llama-cli" ]; then
+  "${LLAMA_CPP_BIN}/llama-cli" --version
+else
+  echo "llama-cli: missing (${LLAMA_CPP_BIN}/llama-cli)"
+fi
+if [ -x "${LLAMA_CPP_BIN}/llama-bench" ]; then
+  "${LLAMA_CPP_BIN}/llama-bench" --list-devices || true
+else
+  echo "llama-bench: missing (${LLAMA_CPP_BIN}/llama-bench)"
+fi
+
+echo
+echo "=== vllm-metal venv ==="
+VLLM_METAL_VENV="${VLLM_METAL_VENV:-${HOME}/.venv-vllm-metal}"
+if [ -x "${VLLM_METAL_VENV}/bin/python" ]; then
+  "${VLLM_METAL_VENV}/bin/python" -c 'import platform; print("python:", platform.python_version(), platform.machine())'
+  "${VLLM_METAL_VENV}/bin/python" - <<'PY'
+import importlib.metadata as metadata
+
+for package in ("vllm", "vllm-metal", "mlx", "mlx-lm"):
+    try:
+        print(f"{package}: {metadata.version(package)}")
+    except metadata.PackageNotFoundError:
+        print(f"{package}: not installed")
+PY
+else
+  echo "venv: missing (${VLLM_METAL_VENV})"
+fi

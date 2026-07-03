@@ -2,7 +2,7 @@
 # 実装はPoCフェーズで harness/ に追加。ここはインターフェースの雛形。
 .DEFAULT_GOAL := help
 
-.PHONY: help env env-mac-check env-mac-ollama env-mac-smoke whichllm fit speed capability task onboard validate sync-skills check-skills
+.PHONY: help env env-mac-check env-mac-ollama env-mac-smoke env-mac-llamacpp env-mac-vllm-metal whichllm fit speed capability task onboard validate sync-skills check-skills
 
 help: ## このヘルプを表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -18,6 +18,12 @@ env-mac-ollama: ## Mac の Ollama(OpenAI互換)を起動/確認（OLLAMA_MODEL=.
 
 env-mac-smoke: ## Mac Ollama のOpenAI互換APIを疎通確認（MODEL=... BASE_URL=...）
 	bash envs/mac/smoke-ollama.sh
+
+env-mac-llamacpp: ## Mac の llama.cpp Metal build を導入/確認
+	bash envs/mac/setup-llamacpp-metal.sh
+
+env-mac-vllm-metal: ## Mac の vLLM Metal venv を導入/確認
+	bash envs/mac/setup-vllm-metal.sh
 
 whichllm: ## WhichLLMで候補モデルを機械抽出（PROFILE=coding 等）
 	bash scripts/whichllm_scan.sh $(PROFILE)
