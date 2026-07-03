@@ -1,8 +1,27 @@
-name: smoke-coding-agent
-model: qwen3-8b
-runtime: ollama
-env: mac
-profile: coding
-workdir: .
-agent_command: "python3 -c 'print(\"agent placeholder\")'"
-test_command: "python3 -c 'print(\"tests placeholder\")'"
+version: coding-agent-public-v1
+judge: deterministic-json-files-pytest-rubric-v1
+tasks:
+  - id: slug-normalizer
+    title: Implement a dependency-free slug normalizer
+    source: public synthetic coding-agent sample
+    threshold: 1.0
+    prompt: |
+      Create a Python module that exposes function to_slug in slugify_utils.py.
+      The function returns a lowercase URL slug, converts runs of non-alphanumeric
+      characters to one hyphen, and trims leading/trailing hyphens.
+    expected_files:
+      - path: slugify_utils.py
+        markers:
+          - "def to_slug"
+          - "re.sub"
+          - "lower"
+          - "strip"
+    test_files:
+      - path: test_slugify_utils.py
+        content: |
+          from slugify_utils import to_slug
+
+
+          def test_to_slug_normalizes_text():
+              assert to_slug("  Hello, Local LLM Lab!!  ") == "hello-local-llm-lab"
+    test_command: ["python3", "-m", "pytest", "-q"]

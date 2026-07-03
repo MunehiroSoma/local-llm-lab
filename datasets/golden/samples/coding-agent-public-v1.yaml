@@ -1,0 +1,88 @@
+version: coding-agent-public-v1
+judge: deterministic-json-files-pytest-rubric-v1
+tasks:
+  - id: slug-normalizer
+    title: Implement a dependency-free slug normalizer
+    source: public synthetic coding-agent sample
+    threshold: 1.0
+    prompt: |
+      Create a Python module that exposes:
+
+      - function name: to_slug
+      - file path: slugify_utils.py
+
+      The function accepts one string and returns a URL slug. Requirements:
+      trim leading/trailing whitespace, lowercase ASCII letters, convert any run
+      of non-alphanumeric characters to one hyphen, and remove leading/trailing
+      hyphens. Do not use third-party packages.
+    expected_files:
+      - path: slugify_utils.py
+        markers:
+          - "def to_slug"
+          - "re.sub"
+          - "lower"
+          - "strip"
+    test_files:
+      - path: test_slugify_utils.py
+        content: |
+          from slugify_utils import to_slug
+
+
+          def test_to_slug_normalizes_spaces_and_symbols():
+              assert to_slug("  Hello, Local LLM Lab!!  ") == "hello-local-llm-lab"
+
+
+          def test_to_slug_collapses_runs_and_trims_hyphens():
+              assert to_slug("__Spec---Driven   Eval__") == "spec-driven-eval"
+    test_command: ["python3", "-m", "pytest", "-q"]
+
+  - id: kv-parser
+    title: Parse simple key-value configuration lines
+    source: public synthetic coding-agent sample
+    threshold: 1.0
+    prompt: |
+      Create a Python module that exposes:
+
+      - function name: parse_kv_lines
+      - file path: kv_config.py
+
+      The function accepts a string containing newline separated configuration
+      lines and returns dict[str, str]. Requirements: ignore blank lines, ignore
+      lines whose first non-space character is "#", split only on the first "=",
+      strip whitespace around keys and values, and keep values as strings.
+      Raise ValueError when a non-comment non-blank line has no "=".
+      Do not use third-party packages.
+    expected_files:
+      - path: kv_config.py
+        markers:
+          - "def parse_kv_lines"
+          - "split"
+          - "strip"
+          - "ValueError"
+    test_files:
+      - path: test_kv_config.py
+        content: |
+          import pytest
+
+          from kv_config import parse_kv_lines
+
+
+          def test_parse_kv_lines_ignores_comments_and_strips_values():
+              text = """
+              # sample config
+              model = qwen3-coder-30b-a3b
+              runtime= mlx
+
+              note = keep = first separator only
+              """
+              assert parse_kv_lines(text) == {
+                  "model": "qwen3-coder-30b-a3b",
+                  "runtime": "mlx",
+                  "note": "keep = first separator only",
+              }
+
+
+          def test_parse_kv_lines_rejects_invalid_lines():
+              with pytest.raises(ValueError):
+                  parse_kv_lines("valid=yes\ninvalid")
+    test_command: ["python3", "-m", "pytest", "-q"]

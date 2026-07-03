@@ -37,6 +37,12 @@ python3 -m harness.task.vlm.screenshot_eval \
   --model gemma4-26b-a4b \
   --base-url http://127.0.0.1:11434/v1 \
   --raster-dir results/raw/vlm-screenshot-v1-png
+python3 -m harness.task.coding_agent.run_case \
+  --model qwen3-coder-30b-a3b \
+  --base-url http://127.0.0.1:11434/v1 \
+  --runtime ollama \
+  --env mac \
+  --output-json results/raw/qwen3-coder-30b-a3b-coding-agent-public-v1.json
 ```
 
 - `fit`: 短い推論でロード可否を判定し、OOM系エラーを `fit=oom` として記録する。
@@ -53,6 +59,9 @@ python3 -m harness.task.vlm.screenshot_eval \
 - `task/vlm/screenshot_eval.py`: 公開サンプルの synthetic screenshot task set を OpenAI互換APIで実行し、
   marker/alias/threshold で決定論的に採点する。モデル実行済みの JSON 出力を `--outputs` で後採点することもできる。
   SVG を受け付けない endpoint では `--raster-dir results/raw/...` で PNG に変換してから実行する。
+- `task/coding_agent/run_case.py`: `coding-agent-public-v1` の公開 synthetic spec から JSON patch を生成させ、
+  必須ファイル、marker、公開 pytest を固定 rubric で採点する。`qwen3-coder-30b-a3b` と `devstral-small-2` は
+  `--model` だけ差し替えて同じ Layer 4 coding 評価に通せる。
 
 ## Mac/Ollama onboarding
 
