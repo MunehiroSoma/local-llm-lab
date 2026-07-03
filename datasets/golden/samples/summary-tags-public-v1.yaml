@@ -1,0 +1,56 @@
+version: summary-tags-public-v1
+judge: deterministic-marker-rubric-v1
+description: "公開可能な架空サンプルだけを使う要約・タグ付け golden task set"
+tasks:
+  - id: local-llm-eval-ops
+    source: public-synthetic
+    input: |
+      これは公開可能な架空サンプルです。ローカル LLM 評価では、モデルを OpenAI 互換 API 経由で差し替え、
+      同じプロンプトと同じ採点ルーブリックを使って比較します。実行ログは raw 証跡として残し、
+      集計した結果だけを report に記録します。
+    expected_summary: "ローカル LLM を OpenAI 互換 API で差し替え、同じプロンプトと固定ルーブリックで比較し、raw と report に分けて記録する。"
+    summary_markers:
+      - ["ローカル LLM", "ローカルLLM"]
+      - ["OpenAI 互換 API", "OpenAI互換API"]
+      - ["同じプロンプト", "同一プロンプト", "固定プロンプト"]
+      - ["ルーブリック", "採点"]
+    tag_markers:
+      - ["ローカル LLM", "ローカルLLM", "ローカル評価"]
+      - ["OpenAI 互換", "OpenAI互換"]
+      - ["評価", "比較"]
+    threshold: 0.8
+  - id: results-governance
+    source: public-synthetic
+    input: |
+      results/results.csv は時系列比較のため追記のみで運用します。生ログやモデル出力全文は
+      results/raw/ に置き、公開リポジトリには commit しません。共有したい要約、表、判断理由は
+      results/reports/ に Markdown として残します。
+    expected_summary: "results/results.csv は追記のみ、raw は commit せず、共有する要約と判断理由は reports に残す。"
+    summary_markers:
+      - ["results/results.csv", "results.csv", "CSV"]
+      - ["追記", "append-only"]
+      - ["raw", "生ログ"]
+      - ["reports", "report"]
+    tag_markers:
+      - ["results/results.csv", "results.csv", "CSV"]
+      - ["raw", "生ログ"]
+      - ["report", "reports"]
+    threshold: 0.8
+  - id: four-layer-onboarding
+    source: public-synthetic
+    input: |
+      新しいモデルは四つの層で確認します。Layer 1 は実ロードの Fit、Layer 2 は tok/s と TTFT の Speed、
+      Layer 3 は llm-jp-eval などの標準ベンチ、Layer 4 は自分の用途に合わせた golden と rubric による
+      task evaluation です。最後に adopt、hold、reject の判断を記録します。
+    expected_summary: "モデルは Fit、Speed、標準ベンチ、自前 task evaluation の四層で確認し、最後に adopt/hold/reject を判断する。"
+    summary_markers:
+      - ["Fit", "実ロード", "適合", "Layer 1"]
+      - ["Speed", "速度", "速度指標", "tok/s", "TTFT", "Layer 2"]
+      - ["標準ベンチ", "標準ベンチマーク", "llm-jp-eval", "Layer 3"]
+      - ["golden", "rubric", "task evaluation", "タスク評価", "カスタムタスク評価", "Layer 4"]
+      - ["adopt", "hold", "reject", "採用", "保持", "却下", "判定"]
+    tag_markers:
+      - ["モデル評価", "Fit", "実ロード"]
+      - ["多段階検証", "四層", "Speed", "tok/s", "TTFT"]
+      - ["タスク評価", "task evaluation", "Layer 4", "golden"]
+    threshold: 0.8
