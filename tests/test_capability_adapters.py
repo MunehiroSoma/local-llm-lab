@@ -31,6 +31,12 @@ def test_extract_llm_jp_style_summary_score() -> None:
     assert extract_benchmark_score(data, "llm-jp-eval") == 0.73
 
 
+def test_extract_llm_jp_eval_v2_average_score() -> None:
+    data = {"evaluation": {"scores": {"AVG": 0.95}}}
+
+    assert extract_benchmark_score(data, "llm-jp-eval") == 0.95
+
+
 def test_extract_vlmevalkit_style_case_average() -> None:
     data = {"results": [{"score": 0.5}, {"score": 1.0}]}
 

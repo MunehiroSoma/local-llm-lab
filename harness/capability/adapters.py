@@ -28,6 +28,7 @@ COMMON_SCALAR_PATHS: tuple[str, ...] = (
     "summary.avg_score",
     "summary.average",
     "summary.overall",
+    "evaluation.scores.AVG",
     "results.score",
     "results.accuracy",
     "results.avg_score",
