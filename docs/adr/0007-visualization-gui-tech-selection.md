@@ -3,7 +3,7 @@
 - ステータス: accepted
 - 日付: 2026-07-03
 - 入力: [`docs/research/2026-07-02-webapp-gui-visualization-study.md`](../research/2026-07-02-webapp-gui-visualization-study.md)
-- 関連: #35（results集計→reports自動生成）, #40
+- 関連: #35（results集計→reports自動生成）, #40, #42（GUI検証プラグイン整備）
 
 ## 背景 / 課題
 
@@ -76,6 +76,31 @@ Quarto CLI と Python パッケージのバージョンは、導入時に runboo
 
 Phase A では Webサーバ、GUI操作、リアルタイム更新、認証、ユーザー管理、スタンドアロン配布を実装しない。
 
+### Phase A の report-gen スキル方針
+
+#35 の実装後、`make report-results` と `python3 -m harness.reporting.results_summary` が
+Phase A の標準コマンドになった。#42 では新しいレポート生成エンジンを増やさず、既存コマンドを
+定型化する薄い `report-gen` スキルを追加する。
+
+`report-gen` は読み取り専用の運用スキルであり、次を必須ルールにする。
+
+- 入力は `results/results.csv` のみとし、`results/raw/` を入力にしない。
+- `results/results.csv` を変更しない。WhichLLM の候補抽出やレポート生成だけでは
+  `results.csv` に追記しない。
+- 生成物は `results/reports/` に置き、commit SHA、入力パス、入力範囲、生成日、生成コマンド、
+  主要ツール版を刻印する。
+- `record-results` の人間承認ゲートを迂回しない。
+
+### Phase B の Playwright MCP 方針
+
+Playwright MCP は Phase A の静的レポート生成には導入しない。Phase B で
+React + TypeScript + Vite の Web UI 実装を開始し、ブラウザ操作を伴う E2E 検証が必要になった時点で
+導入候補にする。
+
+Phase B では Tailwind CSS を前提に UI を実装し、ESLint / Prettier / TypeScript typecheck とあわせて
+Playwright を E2E 検証候補として接続する。導入時は `web/` 側の frontend tooling として管理し、
+Python 側の ruff / mypy / pre-commit とは責務を分ける。
+
 ## 理由 / 代替案
 
 ### Jinja2 + Plotly
@@ -99,4 +124,5 @@ Phase A では採用しない。スタンドアロン配布の署名、更新、
 - `results/reports/` に生成物を置く場合、生成物だけを見ても入力データと commit SHA が分かるようにする。
 - `results/results.csv` は引き続き append-only とし、レポート生成は既存データの読み取り専用処理にする。
 - `results/raw/` は引き続き commit しない。
-- Phase B/C の技術選定は本ADRでは未決定とする。
+- Phase B のフロントエンド標準は React + TypeScript + Vite + Tailwind CSS とする。Playwright MCP は
+  Phase B UI 実装開始時の E2E 検証候補として扱い、Phase A には持ち込まない。
