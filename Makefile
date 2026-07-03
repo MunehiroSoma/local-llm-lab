@@ -34,8 +34,8 @@ capability: ## 標準ベンチ（MODEL=... ENV=... BENCH=... SCORE=...）
 task: ## 自前タスク評価ヘルパー（OUTPUT='{"summary":"...","tags":["..."]}'）
 	python3 -m harness.task.promptfoo.evaluate_json --output '$(OUTPUT)'
 
-onboard: ## 新モデル一括: fit→speed→results追記（MODEL=... ENV=... BASE_URL=...）
-	python3 -m harness.run_onboarding --model "$(MODEL)" --env "$(ENV)" --base-url "$(BASE_URL)" --append-results
+onboard: ## 新モデル一括: fit→speed→capability/task→row作成（MODEL=... ENV=... BASE_URL=...）
+	python3 -m harness.run_onboarding --model "$(MODEL)" --env "$(ENV)" --base-url "$(BASE_URL)" $(ONBOARD_ARGS)
 
 validate: ## registry の YAML を検証
 	@python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in ['registry/models.yaml','registry/hardware.yaml']]; print('registry YAML OK')"
