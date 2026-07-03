@@ -72,3 +72,20 @@ llm-jp-4-8b-instruct,7ae4da12cee2f109509cb8e1d01cf8a0f1a5fbc1,ollama,mac,summari
 ## Verdict
 
 Hold. The model now completes all four onboarding layers on Mac/Ollama and remains useful as a Japanese baseline candidate, but the Layer 3 score is only a lightweight public smoke rather than a full official `llm-jp-eval` run. The summary/tag schema passed, but the generated label text contained a minor typo (`ローカリアルLM`), so this should not be adopted as a production summarization model without a fuller Japanese eval.
+
+## 2026-07-03 Layer 3 addendum
+
+#10 の標準ベンチ連携を使い、公式 `llm-jp-eval` v2.1.5 の `jcommonsenseqa` test split full run を追加で実行した。
+
+- Tool: `llm-jp-eval` v2.1.5, commit `5067fe7bcd33797643835573505d5ec06858ea34`
+- Dataset: `jcommonsenseqa`
+- Samples: 1119
+- Score: `jcommonsenseqa_exact_match=0.9597855227882037`
+- Normalized Layer 3 score: `std_bench=0.959786`
+- Correct / total: `1074 / 1119`
+- Raw: `results/raw/2026-07-03-llm-jp-4-8b-instruct-llm-jp-eval-jcommonsenseqa-full-v2.1.5.json`
+- Report: `results/reports/2026-07-03-llm-jp-4-8b-instruct-llm-jp-eval-jcommonsenseqa.md`
+
+これにより、full 公式 `llm-jp-eval` dataset による Layer 3 標準ベンチの不足分は埋まった。#64 は Layer 4 を
+golden / rubric 水準で再実行し、`results/results.csv` の final or revised row 追記が承認され、最終 verdict が
+記録されるまでは `hold` のままとする。
