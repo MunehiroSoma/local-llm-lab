@@ -10,7 +10,7 @@ models:
   - id: gemma4-12b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
     hf_repo: google/gemma-4-12b-it
-    revision: null            # ← オンボーディング時にコミットハッシュで固定
+    revision: 5926caa4ec0cac5cbfadaf4077420520de1d5205
     modality: [text, image, audio]
     params: 12B
     quantization: [bf16, fp8, q4_k_m]
@@ -18,7 +18,7 @@ models:
     max_model_len: 128000
     profiles: [concierge, vlm, summarize]
     target_envs: [mac, rtx-5060ti, rtx-5070, dgx-spark]
-    notes: "日常/コンシェルジュ本命。音声入力可。整った日本語。"
+    notes: "日常/コンシェルジュ本命。音声入力可。整った日本語。Mac/Ollama実測は gemma4:12b Q4_K_M、Ollama ID 4eb23ef187e2。Mac/MLX-VLM実測は mlx-community/gemma-4-12b-it-4bit、MLX conversion revision: 73bcf09092aa277861d5a191b989b666f7f32e8f。Ollama OpenAI互換textではcontent空のためLayer 3は0.0。"
 
   - id: gemma4-26b-a4b
     status: candidate         # candidate|onboarded（revision確定時にonboardedへ変更）
